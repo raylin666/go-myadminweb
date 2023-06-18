@@ -23,7 +23,7 @@ export function logout() {
 
 export function getUserInfo() {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.post<UserState>('/account/info');
+  return axios.get<UserState>('/account/info');
 }
 
 export function getMenuList() {

@@ -61,7 +61,7 @@ axios.interceptors.response.use(
     // 101001: 无效身份; 201002: 账号不存在; 201003: 账号已冻结; 201005: 账号已在其他区域登录; --- 重新登录
     if (
       [101001, 201002, 201003, 201005].includes(response.code) &&
-      error.response.config.url !== 'account/info'
+      !['/account/info', '/account/login'].includes(error.response.config.url)
     ) {
       Modal.error({
         title: '确认登出',

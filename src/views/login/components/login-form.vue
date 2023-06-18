@@ -73,7 +73,9 @@
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import type { LoginRequest } from '@/api/account';
+  import md5 from 'js-md5';
 
+  const isStore = ref(false);
   const router = useRouter();
   const { t } = useI18n();
   const errorMessage = ref('');
@@ -85,6 +87,11 @@
     username: '',
     password: '',
   });
+
+  if (loginConfig.value.password) {
+    isStore.value = true;
+  }
+
   const userInfo = reactive({
     username: loginConfig.value.username,
     password: loginConfig.value.password,
@@ -101,7 +108,17 @@
     if (!errors) {
       setLoading(true);
       try {
-        await userStore.login(values as LoginRequest);
+        let reqPassword = values.password;
+        if (!isStore.value) {
+          reqPassword = md5(values.password);
+        } else if (values.password !== loginConfig.value.password) {
+          reqPassword = md5(values.password);
+        }
+
+        await userStore.login({
+          username: values.username,
+          password: reqPassword,
+        } as LoginRequest);
         const { redirect, ...othersQuery } = router.currentRoute.value.query;
         router.push({
           name: (redirect as string) || 'Workplace',
@@ -111,11 +128,12 @@
         });
         Message.success(t('login.form.login.success'));
         const { rememberPassword } = loginConfig.value;
-        const { username, password } = values;
+        const { username } = values;
+
         // 实际生产环境需要进行加密存储。
         // The actual production environment requires encrypted storage.
         loginConfig.value.username = rememberPassword ? username : '';
-        loginConfig.value.password = rememberPassword ? password : '';
+        loginConfig.value.password = rememberPassword ? reqPassword : '';
       } catch (err) {
         errorMessage.value = (err as Error).message;
       } finally {

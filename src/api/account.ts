@@ -1,5 +1,4 @@
 import axios from 'axios';
-import type { RouteRecordNormalized } from 'vue-router';
 import { UserState } from '@/store/modules/user/types';
 
 export interface LoginRequest {
@@ -24,8 +23,4 @@ export function logout() {
 export function getUserInfo() {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
   return axios.get<UserState>('/account/info');
-}
-
-export function getMenuList() {
-  return axios.post<RouteRecordNormalized[]>('/api/user/menu');
 }

@@ -3,8 +3,8 @@ import {
   login as userLogin,
   logout as userLogout,
   getUserInfo,
-  LoginData,
-} from '@/api/user';
+  LoginRequest,
+} from '@/api/account';
 import { setToken, clearToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
@@ -61,7 +61,7 @@ const useUserStore = defineStore('user', {
     },
 
     // Login
-    async login(loginForm: LoginData) {
+    async login(loginForm: LoginRequest) {
       try {
         const res = await userLogin(loginForm);
         setToken(res.data.token);

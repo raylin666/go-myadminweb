@@ -72,7 +72,7 @@
   import { useStorage } from '@vueuse/core';
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
-  import type { LoginData } from '@/api/user';
+  import type { LoginRequest } from '@/api/account';
 
   const router = useRouter();
   const { t } = useI18n();
@@ -82,8 +82,8 @@
 
   const loginConfig = useStorage('login-config', {
     rememberPassword: true,
-    username: 'admin', // 演示默认值
-    password: 'admin', // demo default value
+    username: '',
+    password: '',
   });
   const userInfo = reactive({
     username: loginConfig.value.username,
@@ -101,7 +101,7 @@
     if (!errors) {
       setLoading(true);
       try {
-        await userStore.login(values as LoginData);
+        await userStore.login(values as LoginRequest);
         const { redirect, ...othersQuery } = router.currentRoute.value.query;
         router.push({
           name: (redirect as string) || 'Workplace',

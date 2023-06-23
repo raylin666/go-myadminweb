@@ -9,6 +9,7 @@ declare module '*.vue' {
 interface ImportMetaEnv {
   readonly VITE_API_BASE_PROXY_PASS: string;
   readonly VITE_API_BASE_URL: string;
+  readonly VITE_WEBSOKCET_SERVER_URL: string;
 }
 
 declare module 'js-md5';

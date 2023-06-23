@@ -86,6 +86,7 @@
     if (!isInit.value) return; // for page initialization menu state problem
     appStore.updateSettings({ menuCollapse: val });
   };
+
   watch(
     () => userStore.role,
     (roleValue) => {
@@ -93,6 +94,7 @@
         router.push({ name: 'notFound' });
     }
   );
+
   const drawerVisible = ref(false);
   const drawerCancel = () => {
     drawerVisible.value = false;
@@ -100,6 +102,7 @@
   provide('toggleDrawerMenu', () => {
     drawerVisible.value = !drawerVisible.value;
   });
+
   onMounted(() => {
     isInit.value = true;
   });

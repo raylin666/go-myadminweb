@@ -16,7 +16,7 @@ const useWebSocketStore = defineStore('websocket', {
     newConnect(url: string) {
       this.socket = new WebSocketClient(url, this.eventTypes);
       this.connect();
-      
+
       /**
        * 事件注册 START
        */

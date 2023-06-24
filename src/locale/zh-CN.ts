@@ -28,11 +28,32 @@ import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 
 import localeSettings from './zh-CN/settings';
 
+import localeArticle from '@/views/article/locale/zh-CN';
+
 export default {
+  // 公共基础
+  'basic.home.name': 'Micro Server API',
+  'basic.home.title': '微服务中后台管理系统',
+  // 搜索相关
+  'search.form.search': '查询',
+  'search.form.reset': '重置',
+  'search.form.selectDefault': '全部',
+  'action.operation.create': '新建',
+  'action.operation.delete': '批量删除',
+  'table.size.mini': '迷你',
+  'table.size.small': '偏小',
+  'table.size.medium': '中等',
+  'table.size.large': '偏大',
+  'table.actions.refresh': '刷新',
+  'table.actions.density': '密度',
+  'table.actions.columnSetting': '列设置',
+  // 菜单相关
   'menu.dashboard': '仪表盘',
   'menu.server.dashboard': '仪表盘-服务端',
   'menu.server.workplace': '工作台-服务端',
   'menu.server.monitor': '实时监控-服务端',
+  'menu.article': '文章管理',
+  'menu.article.list': '文章列表',
   'menu.list': '列表页',
   'menu.result': '结果页',
   'menu.exception': '异常页',
@@ -64,4 +85,5 @@ export default {
   ...locale500,
   ...localeUserInfo,
   ...localeUserSetting,
+  ...localeArticle,
 };

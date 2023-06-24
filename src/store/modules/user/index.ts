@@ -5,17 +5,11 @@ import {
   getUserInfo,
   LoginRequest,
 } from '@/api/account';
-import {
-  NotificationSuccess,
-  NotificationWarning,
-  NotificationError,
-} from '@/utils/notification';
 import { setToken, clearToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
 import useAppStore from '../app';
 import useWebSocketStore from '../ws';
-import { WS_EVENT_NOTICE } from '@/utils/ws_event';
 
 const useUserStore = defineStore('user', {
   state: (): UserState => ({
@@ -74,29 +68,9 @@ const useUserStore = defineStore('user', {
 
         // WebSocket
         const wsStore = useWebSocketStore();
-        wsStore.new(
+        wsStore.newConnect(
           `${import.meta.env.VITE_WEBSOKCET_SERVER_URL}?token=${res.data.token}`
         );
-        wsStore.connect();
-        // 注册消息通知
-        wsStore.on(WS_EVENT_NOTICE, (event: any) => {
-          if (!event.data) return null;
-
-          switch (event.data.type) {
-            case 'success':
-              NotificationSuccess(event.data.text);
-              break;
-            case 'warning':
-              NotificationWarning(event.data.text);
-              break;
-            case 'error':
-              NotificationError(event.data.text);
-              break;
-            default:
-          }
-
-          return null;
-        });
       } catch (err) {
         clearToken();
         throw err;

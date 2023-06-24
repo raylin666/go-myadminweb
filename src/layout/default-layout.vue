@@ -47,7 +47,7 @@
 <script lang="ts" setup>
   import { ref, computed, watch, provide, onMounted } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
-  import { useAppStore, useUserStore } from '@/store';
+  import { useAppStore, useUserStore, useWebSocketStore } from '@/store';
   import NavBar from '@/components/navbar/index.vue';
   import Menu from '@/components/menu/index.vue';
   import Footer from '@/components/footer/index.vue';
@@ -55,10 +55,12 @@
   import usePermission from '@/hooks/permission';
   import useResponsive from '@/hooks/responsive';
   import PageLayout from './page-layout.vue';
+  import { getToken } from '@/utils/auth';
 
   const isInit = ref(false);
   const appStore = useAppStore();
   const userStore = useUserStore();
+  const wsStore = useWebSocketStore();
   const router = useRouter();
   const route = useRoute();
   const permission = usePermission();
@@ -86,12 +88,27 @@
     if (!isInit.value) return; // for page initialization menu state problem
     appStore.updateSettings({ menuCollapse: val });
   };
-
   watch(
     () => userStore.role,
     (roleValue) => {
       if (roleValue && !permission.accessRouter(route))
         router.push({ name: 'notFound' });
+    }
+  );
+
+  // WebSocket 断开重连
+  watch(
+    () => route.path,
+    () => {
+      if (!wsStore.isConnect()) {
+        if (!wsStore.socket) {
+          wsStore.newConnect(
+            `${import.meta.env.VITE_WEBSOKCET_SERVER_URL}?token=${getToken()}`
+          );
+        } else {
+          wsStore.connect();
+        }
+      }
     }
   );
 

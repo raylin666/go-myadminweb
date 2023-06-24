@@ -7,7 +7,4 @@ const WS_EVENT_NOTICE = 'notice';
 // 发送消息
 const WS_EVENT_SEND_MESSAGE = 'sendMessage';
 
-export {
-  WS_EVENT_NOTICE,
-  WS_EVENT_SEND_MESSAGE,
-};
+export { WS_EVENT_NOTICE, WS_EVENT_SEND_MESSAGE };

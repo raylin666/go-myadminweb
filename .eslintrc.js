@@ -68,5 +68,6 @@ module.exports = {
     'import/no-extraneous-dependencies': 0,
     'import/order': 'off',
     'no-console': 'off',
+    'no-verify': 'off',
   },
 };

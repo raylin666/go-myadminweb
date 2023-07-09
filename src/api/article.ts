@@ -47,7 +47,7 @@ export interface ArticleListRes {
  */
 export function requestArticleList(params: ArticleListParams) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.get<ArticleListRes>('/knowledge/article/list', {
+  return axios.get<ArticleListRes>('/article/list', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -67,7 +67,7 @@ export function requestArticleUpdateField(
   value: string
 ) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.patch(`/knowledge/article/update/${id}/${field}`, {
+  return axios.patch(`/article/update/${id}/${field}`, {
     value,
   });
 }
@@ -78,7 +78,7 @@ export function requestArticleUpdateField(
  */
 export function requestArticleDelete(id: string | number) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.delete(`/knowledge/article/delete/${id}`);
+  return axios.delete(`/article/delete/${id}`);
 }
 
 export interface ArticleCategoryList {
@@ -135,5 +135,5 @@ export interface ArticleAddRes {
  * @param params
  */
 export function requestArticleAdd(params: ArticleAddParams) {
-  return axios.put<ArticleAddRes>(`/article.api/article/add`, params);
+  return axios.post<ArticleAddRes>(`/article.api/article/add`, params);
 }

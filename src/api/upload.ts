@@ -5,7 +5,17 @@ import axios from 'axios';
  * @param stream
  * @param mime_type
  */
-export default function requestUploadFile(stream: string, mimeType: string) {
+export function requestUploadFileStream(stream: string, mimeType: string) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.put(`/upload/file/stream`, { stream, mimeType });
+  return axios.post(`/upload/file/stream`, { stream, mimeType });
+}
+
+/**
+ * 文件资源模式上传
+ * @param stream
+ * @param mime_type
+ */
+export function requestUploadFileResource() {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.post(`/upload/file/stream`, { });
 }

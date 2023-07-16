@@ -35,3 +35,27 @@ export interface GeneralChart {
   xAxis: string[];
   data: Array<{ name: string; value: number[] }>;
 }
+
+export interface FormModel {
+  [x: string]: any;
+}
+
+export interface HttpResponse<T = unknown> {
+  ok: boolean;
+  code: number;
+  message: string;
+  data: T;
+}
+
+export interface TRequestParams {
+  page?: number;
+  size?: number;
+}
+
+export interface TResponse {
+  list?: any[];
+  total?: number;
+  current_page?: number;
+  last_page?: number;
+  size?: number;
+}

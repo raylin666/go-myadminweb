@@ -4,13 +4,7 @@ import { Message, Modal } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
 import { getToken } from '@/utils/auth';
 import debug from '@/utils/env';
-
-export interface HttpResponse<T = unknown> {
-  ok: boolean;
-  code: number;
-  message: string;
-  data: T;
-}
+import { HttpResponse } from '@/types/global';
 
 // 请求拦截器 (在请求之前进行的配置)
 axios.interceptors.request.use(
@@ -42,7 +36,7 @@ axios.interceptors.response.use(
       console.log(response);
     }
 
-    return response.data;
+    return response;
   },
   (error) => {
     // 调试模式打印请求响应数据

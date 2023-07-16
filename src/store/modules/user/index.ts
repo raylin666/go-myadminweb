@@ -3,13 +3,13 @@ import {
   login as userLogin,
   logout as userLogout,
   getUserInfo,
-  LoginRequest,
 } from '@/api/account';
 import { setToken, clearToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
 import useAppStore from '../app';
 import useWebSocketStore from '../ws';
+import { LoginRequest } from '@/types/account';
 
 const useUserStore = defineStore('user', {
   state: (): UserState => ({
@@ -55,21 +55,20 @@ const useUserStore = defineStore('user', {
 
     // Get user's information
     async info() {
-      const res = await getUserInfo();
-
-      this.setInfo(res.data);
+      const { data } = await getUserInfo();
+      this.setInfo(data.data);
     },
 
     // Login
     async login(loginForm: LoginRequest) {
       try {
-        const res = await userLogin(loginForm);
-        setToken(res.data.token);
+        const { data } = await userLogin(loginForm);
+        setToken(data.data.token);
 
         // WebSocket
         const wsStore = useWebSocketStore();
         wsStore.newConnect(
-          `${import.meta.env.VITE_WEBSOKCET_SERVER_URL}?token=${res.data.token}`
+          `${import.meta.env.VITE_WEBSOKCET_SERVER_URL}?token=${data.data.token}`
         );
       } catch (err) {
         clearToken();

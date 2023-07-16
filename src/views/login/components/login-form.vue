@@ -72,8 +72,8 @@
   import { useStorage } from '@vueuse/core';
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
-  import type { LoginRequest } from '@/api/account';
   import md5 from 'js-md5';
+  import { LoginRequest } from '@/types/account';
 
   const isStore = ref(false);
   const router = useRouter();

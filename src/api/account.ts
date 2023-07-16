@@ -1,26 +1,19 @@
 import axios from 'axios';
 import { UserState } from '@/store/modules/user/types';
-
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-}
+import { LoginRequest, LoginResponse } from '@/types/account';
+import { HttpResponse } from '@/types/global';
 
 export function login(data: LoginRequest) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.post<LoginResponse>('/account/login', data);
+  return axios.post<HttpResponse<LoginResponse>>('/account/login', data);
 }
 
 export function logout() {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.post<LoginResponse>('/account/logout');
+  return axios.post<HttpResponse>('/account/logout');
 }
 
 export function getUserInfo() {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.get<UserState>('/account/info');
+  return axios.get<HttpResponse<UserState>>('/account/info');
 }

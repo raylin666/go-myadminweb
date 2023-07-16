@@ -1548,7 +1548,7 @@
     "@volar/typescript" "1.7.6"
     "@vue/language-core" "1.8.0"
 
-"@vueuse/core@^9.3.0":
+"@vueuse/core@^9.13.0":
   "integrity" "sha512-pujnclbeHWxxPRqXWmdkKV5OX4Wk4YeK7wusHqRwU0Q7EFusHoqNA/aPhB6KCh9hEqJkLAJo7bb0Lh9b+OIVzw=="
   "resolved" "https://registry.npmmirror.com/@vueuse/core/-/core-9.13.0.tgz"
   "version" "9.13.0"

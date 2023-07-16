@@ -162,7 +162,7 @@
                   :options="categoryOptions"
                   :field-names="categoryFieldNames"
                   multiple
-                  :max-tag-count="5"
+                  :limit="5"
                   allow-clear
                   :placeholder="$t('article.form.basic.category.placeholder')"
                 />
@@ -321,11 +321,12 @@
   import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
   import MdEditor from '@/components/editor/index.vue';
   import { RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
-  import requestUploadFile from '@/api/upload';
+  import { requestUploadFileStream } from '@/api/upload';
   import { fileToBase64 } from '@/utils/file';
   import { MessageSuccess } from '@/utils/notification';
-  import { requestArticleCategoryList, requestArticleAdd } from '@/api/article';
+  import { requestArticleCategoryListSelect, requestArticleAdd } from '@/api/article';
   import { useUserStore } from '@/store';
+  import { onMounted } from 'vue';
 
   /**
    * 国际语言
@@ -333,7 +334,7 @@
   const { t } = useI18n();
 
   /**
-   * 表单布局
+   * 表单布局模式
    */
   const layout = ref('vertical');
 
@@ -354,7 +355,7 @@
     status: false,
     sort: 0,
     author: userStore.real_username,
-    category: ref([]),
+    category: [],
     keyword: [],
     attachment_path: [],
     content: '',
@@ -371,7 +372,7 @@
     const fileType = option.fileItem.file?.type.toString();
     fileToBase64(option.fileItem.file).then((stream: any) => {
       stream = stream.split(',');
-      requestUploadFile(stream[1], String(fileType))
+      requestUploadFileStream(stream[1], String(fileType))
         .then((res: any) => {
           form.cover = res.data.url;
           file.value = {
@@ -400,21 +401,20 @@
    */
   const categoryFieldNames = { value: 'id', label: 'name' };
   const categoryOptions: any[] = reactive([]);
-  const apiCategoryListHandle = async () => {
+  onMounted(async () => {
     try {
-      const { data } = await requestArticleCategoryList();
+      const listSelect = await requestArticleCategoryListSelect();
       // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < data.list.length; i++) {
+      for (let i = 0; i < listSelect.data.list.length; i++) {
         categoryOptions.push({
-          id: data.list[i].id,
-          name: data.list[i].name,
+          id: listSelect.data.list[i].id,
+          name: listSelect.data.list[i].name,
         });
       }
     } catch (err) {
       // you can report use errorHandler or other
     }
-  };
-  apiCategoryListHandle();
+  });
 
   /**
    * 定义调用该组件的父级组件中的传递属性
@@ -471,7 +471,7 @@
 
     await requestArticleAdd({
       title: form.title,
-      author: form.author,
+      author: form.author ? form.author : '',
       summary: form.summary,
       cover: form.cover,
       sort: form.sort,
@@ -484,9 +484,6 @@
       keyword: form.keyword,
       attachment_path: form.attachment_path,
       category: form.category,
-      view_count: 0,
-      comment_count: 0,
-      share_count: 0,
     });
   };
 

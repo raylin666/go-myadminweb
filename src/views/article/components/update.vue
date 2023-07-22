@@ -7,7 +7,7 @@
     @ok="handleDrawerOk"
     @cancel="emit('cancel')"
   >
-    <template #title> {{ t('article.form.basic.add.title') }} </template>
+    <template #title> {{ t('article.form.basic.update.title') }} </template>
 
     <div>
       <p></p>
@@ -59,6 +59,7 @@
                   :max-length="{ length: 250, errorOnly: true }"
                   allow-clear
                   show-word-limit
+                  style="height: 92px;"
                 />
               </a-form-item>
             </a-col>

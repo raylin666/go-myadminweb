@@ -33,6 +33,8 @@ export default {
   'articleList.columns.operations.delete': '删除',
   // 表单提交
   'article.form.basic.add.title': '新增文章',
+  'article.form.basic.info.title': '文章详情',
+  'article.form.basic.update.title': '更新文章',
   'article.form.basic.title': '文章标题',
   'article.form.basic.title.placeholder': '请输入文章标题',
   'article.form.basic.title.validate.message': '文章标题不能为空',
@@ -40,6 +42,7 @@ export default {
   'article.form.basic.summary.placeholder': '请填写文章摘要',
   'article.form.basic.summary.validate.message': '文章摘要不能为空',
   'article.form.basic.content': '文章内容',
+  'article.form.basic.content.preview': '文章正文内容',
   'article.form.basic.content.placeholder': '请填写文章内容',
   'article.form.basic.content.validate.message': '文章内容不能为空',
   'article.form.basic.cover': '文章封面',

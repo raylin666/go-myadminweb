@@ -59,6 +59,7 @@
                   :max-length="{ length: 250, errorOnly: true }"
                   allow-clear
                   show-word-limit
+                  style="height: 92px;"
                 />
               </a-form-item>
             </a-col>
@@ -335,7 +336,7 @@
   import { FormModel } from '../data/form';
   import Upload from '@/class/upload';
   import { watch } from 'vue';
-import { cloneDeep } from 'lodash';
+  import { cloneDeep } from 'lodash';
 
   /**
    * 定义调用该组件的父级组件中的传递属性

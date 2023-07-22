@@ -7,7 +7,6 @@ export interface ArticleList {
     cover: string;
     sort: number;
     user_id: string;
-    publisher_username: string;
     status: 0 | 1;
     recommend_flag: boolean;
     commented_flag: boolean;
@@ -22,7 +21,7 @@ export interface ArticleList {
     source: string;
     source_url: string;
     keyword: Array<string | number>;
-    category: string;
+    category: Array<any>;
 }
 
 export interface ArticleListParams extends TRequestParams {
@@ -90,4 +89,31 @@ export interface ArticleAddParams {
 
 export interface ArticleAddResponse {
     id: string;
+}
+
+export interface ArticleInfoResponse {
+    id: number;
+    title: string;
+    author: string;
+    cover: string;
+    summary: string;
+    sort: number;
+    user_id: string;
+    status: 0 | 1;
+    recommend_flag: boolean;
+    commented_flag: boolean;
+    created_at: string;
+    updated_at: string;
+    view_count: number;
+    comment_count: number;
+    collection_count: number;
+    zan_count: number;
+    share_count: number;
+    last_commented_at: string;
+    source: string;
+    source_url: string;
+    content: string;
+    keyword: Array<string | number>;
+    attachment_path: Array<string>;
+    category: Array<any>;
 }

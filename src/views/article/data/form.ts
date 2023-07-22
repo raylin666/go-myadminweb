@@ -31,7 +31,7 @@ export interface FormModelInterface extends Model {
   sort: number,
   author: string,
   category: Array<string | number>,
-  keyword: Array<string>,
+  keyword: Array<string | number>,
   attachment_path: Array<string>,
   content: string,
   source: string,

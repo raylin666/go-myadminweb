@@ -7,11 +7,13 @@
     />
     <UpdateArticleDrawerPage
       :visible="propsTable.visible.UpdateDrawer"
+      :id="id"
       @cancel="() => propsTable.visible.UpdateDrawer = false"
       @form-callback-success="formCallbackSuccess"
     />
     <InfoArticleDrawerPage
       :visible="propsTable.visible.InfoDrawer"
+      :id="id"
       @cancel="() => propsTable.visible.InfoDrawer = false"
     />
 
@@ -248,8 +250,8 @@
             v-for="(item, index) in record.category"
             :key="index"
             bordered
-            :color="getRandColor"
-            style="margin-right: 5px"
+            :color="item.color"
+            style="margin-right: 5px; margin-bottom: 5px;"
           >
             <template #icon>
               <icon-tag />
@@ -308,11 +310,11 @@
           </a-switch>
         </template>
         <template #operations="{ record }">
-          <a-button v-permission="['admin']" type="primary" size="mini" @click="() => propsTable.visible.InfoDrawer = true">
+          <a-button v-permission="['admin']" type="primary" size="mini" @click="infoAction(record.id)">
             {{ $t('articleList.columns.operations.info') }}
           </a-button>
           &nbsp;
-          <a-button v-permission="['admin']" status="warning" size="mini" @click="() => propsTable.visible.UpdateDrawer = true">
+          <a-button v-permission="['admin']" status="warning" size="mini" @click="updateAction(record.id)">
             {{ $t('articleList.columns.operations.edit') }}
           </a-button>
           &nbsp;
@@ -338,6 +340,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import {
     requestArticleList,
@@ -349,7 +352,6 @@
   import AddArticleDrawerPage from './components/add.vue';
   import UpdateArticleDrawerPage from './components/update.vue';
   import InfoArticleDrawerPage from './components/info.vue';
-  import getRandColor from '@/utils/color';
   import { ArticleListParams } from '@/types/article';
   import useFormProps from '@/hooks/form';
   import { useTableProps, getDensityListOptions } from '@/hooks/table';
@@ -432,6 +434,17 @@
   // 新增/修改 表单提交成功后的回调处理
   const formCallbackSuccess = () => {
     getTableDataList();
+  };
+
+  // 当前点击获取的业务ID
+  const id = ref(0);
+  const infoAction = (articleId: number) => {
+    propsTable.visible.InfoDrawer = true;
+    id.value = articleId;
+  };
+  const updateAction = (articleId: number) => {
+    propsTable.visible.UpdateDrawer = true;
+    id.value = articleId;
   };
 </script>
 

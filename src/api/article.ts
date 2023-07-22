@@ -9,6 +9,7 @@ import {
   ArticleCategoryListSelectResponse,
   ArticleAddParams,
   ArticleAddResponse,
+  ArticleInfoResponse,
 } from '@/types/article';
 import { HttpResponse, TRequestParams } from '@/types/global';
 
@@ -24,6 +25,15 @@ export function requestArticleList(params: ArticleListParams | TRequestParams) {
       return qs.stringify(obj);
     },
   });
+}
+
+/**
+ * 文章详情
+ * @param id
+ */
+export function requestArticleInfo(id: string | number) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.get<HttpResponse<ArticleInfoResponse>>(`/article/info/${id}`);
 }
 
 /**

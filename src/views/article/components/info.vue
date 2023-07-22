@@ -1,12 +1,15 @@
 <template>
   <a-drawer
-    width="86%"
+    width="100%"
     :visible="visible"
+    :id="id"
     unmount-on-close
-    :mask-closable="false"
-    @ok="emit('cancel')"
+    :mask-closable="true"
+    hide-cancel
+    @cancel="emit('cancel')"
+    :footer="false"
   >
-    <template #title> {{ t('article.form.basic.add.title') }} </template>
+    <template #title> {{ t('article.form.basic.info.title') }} </template>
 
     <div>
       <p></p>
@@ -19,19 +22,12 @@
             <a-col :span="24">
               <a-form-item
                 field="title"
+                disabled
                 :label="$t('article.form.basic.title')"
-                :rules="[
-                  {
-                    required: true,
-                    message: $t('article.form.basic.title.validate.message'),
-                  },
-                ]"
-                :validate-trigger="['change', 'input']"
               >
                 <a-input
                   v-model="propsForm.fields.title"
                   allow-clear
-                  :placeholder="$t('article.form.basic.title.placeholder')"
                 />
               </a-form-item>
             </a-col>
@@ -40,43 +36,28 @@
             <a-col :span="22">
               <a-form-item
                 field="summary"
+                disabled
                 :label="$t('article.form.basic.summary')"
-                :rules="[
-                  {
-                    required: true,
-                    message: $t('article.form.basic.summary.validate.message'),
-                  },
-                ]"
-                :validate-trigger="['change', 'input']"
               >
                 <a-textarea
                   v-model="propsForm.fields.summary"
-                  :placeholder="$t('article.form.basic.summary.placeholder')"
                   :max-length="{ length: 250, errorOnly: true }"
                   allow-clear
                   show-word-limit
+                  style="height: 92px;"
                 />
               </a-form-item>
             </a-col>
             <a-col :span="2">
               <a-form-item
                 field="cover"
+                disabled
                 :label="$t('article.form.basic.cover')"
-                :rules="[
-                  {
-                    required: true,
-                    message: $t('article.form.basic.cover.validate.message'),
-                  },
-                ]"
-                :validate-trigger="['change']"
               >
                 <a-upload
                   v-model="propsForm.fields.cover"
                   :file-list="coverFile ? [coverFile] : []"
                   :show-file-list="false"
-                  :custom-request="uploadCoverFileStream"
-                  @change="uploadCoverChange"
-                  @progress="uploadCoverProgress"
                 >
                   <template #upload-button>
                     <div
@@ -91,9 +72,6 @@
                         class="arco-upload-list-picture custom-upload-avatar"
                       >
                         <img :src="coverFile.url" :alt="coverFile.url" />
-                        <div class="arco-upload-list-picture-mask">
-                          <IconEdit />
-                        </div>
                         <a-progress
                           v-if="
                             coverFile.status === 'uploading' && coverFile.percent < 100
@@ -124,57 +102,25 @@
             </a-col>
           </a-row>
           <a-row :gutter="24">
-            <a-col :span="24">
-              <a-form-item
-                field="content"
-                :label="$t('article.form.basic.content')"
-                :rules="[
-                  {
-                    required: true,
-                    message: $t('article.form.basic.content.validate.message'),
-                  },
-                ]"
-                :validate-trigger="['change', 'input']"
-              >
-                <MdEditor v-model="propsForm.fields.content" />
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="24">
             <a-col :span="12">
               <a-form-item
                 field="category"
+                disabled
                 :label="$t('article.form.basic.category')"
-                :rules="[
-                  {
-                    required: true,
-                    message: $t('article.form.basic.category.validate.message'),
-                  },
-                ]"
-                :validate-trigger="['change', 'input']"
               >
-                <a-select
+                <a-input-tag
                   v-model="propsForm.fields.category"
-                  :options="categoryOptions"
-                  :field-names="{ value: 'id', label: 'name' }"
-                  multiple
-                  :limit="5"
                   allow-clear
-                  :placeholder="$t('article.form.basic.category.placeholder')"
+                  :max-tag-count="5"
+                  :unique-value="true"
                 />
               </a-form-item>
             </a-col>
             <a-col :span="12">
               <a-form-item
                 field="sort"
+                disabled
                 :label="$t('article.form.basic.sort')"
-                :rules="[
-                  {
-                    required: true,
-                    message: $t('article.form.basic.sort.validate.message'),
-                  },
-                ]"
-                :validate-trigger="['change', 'input']"
               >
                 <a-input-number
                   v-model="propsForm.fields.sort"
@@ -189,6 +135,7 @@
             <a-col :span="12">
               <a-form-item
                 field="keyword"
+                disabled
                 :label="$t('article.form.basic.keyword')"
               >
                 <a-input-tag
@@ -196,7 +143,6 @@
                   allow-clear
                   :max-tag-count="5"
                   :unique-value="true"
-                  :placeholder="$t('article.form.basic.keyword.placeholder')"
                 />
               </a-form-item>
             </a-col>
@@ -204,6 +150,7 @@
             <a-col :span="2">
               <a-form-item
                 field="status"
+                disabled
                 :label="$t('article.form.basic.status')"
               >
                 <a-switch
@@ -219,6 +166,7 @@
             <a-col :span="2">
               <a-form-item
                 field="recommend_flag"
+                disabled
                 :label="$t('article.form.basic.recommend_flag')"
               >
                 <a-switch v-model="propsForm.fields.recommend_flag" type="round">
@@ -230,6 +178,7 @@
             <a-col :span="2">
               <a-form-item
                 field="commented_flag"
+                disabled
                 :label="$t('article.form.basic.commented_flag')"
               >
                 <a-switch
@@ -269,6 +218,7 @@
             <a-col :span="12">
               <a-form-item
                 field="source"
+                disabled
                 :label="$t('article.form.basic.source')"
               >
                 <a-input v-model="propsForm.fields.source" allow-clear />
@@ -277,6 +227,7 @@
             <a-col :span="12">
               <a-form-item
                 field="source_url"
+                disabled
                 :label="$t('article.form.basic.source_url')"
               >
                 <a-input v-model="propsForm.fields.source_url" allow-clear />
@@ -287,20 +238,21 @@
             <a-col :span="24">
               <a-form-item
                 field="attachment_path"
+                disabled
                 :label="$t('article.form.basic.attachment_path')"
               >
-                <a-upload
-                  v-model="propsForm.fields.attachment_path"
-                  :file-list="attachmentPathFile ? [attachmentPathFile] : []"
-                  :limit="5"
-                  list-type="picture"
-                  draggable
-                  :custom-request="uploadAttachmentPathFileStream"
-                  @change="uploadAttachmentPathChange"
-                  @progress="uploadAttachmentPathProgress"
-                >
-                </a-upload>
+              <a-image-preview-group infinite>
+                <a-space v-for="(url, index) in propsForm.fields.attachment_path" :key="index">
+                  <a-image :src="url" width="100" height="100" />
+                </a-space>
+              </a-image-preview-group>
               </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row :gutter="24">
+            <a-col :span="24">
+              <a-divider orientation="center">{{ t('article.form.basic.content.preview') }}</a-divider>
+              <MdPreview v-model="propsForm.fields.content" />
             </a-col>
           </a-row>
         </a-form>
@@ -310,26 +262,19 @@
 </template>
 
 <script lang="ts" setup>
-  import { PropType, ref, reactive } from 'vue';
+  import { PropType, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import IconEdit from '@arco-design/web-vue/es/icon/icon-edit';
   import IconPlus from '@arco-design/web-vue/es/icon/icon-plus';
-  import MdEditor from '@/components/editor/index.vue';
-  import { RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
-  import { MessageSuccess, NotificationError, NotificationWarning } from '@/utils/notification';
-  import { requestArticleCategoryListSelect, requestArticleAdd } from '@/api/article';
-  import { useUserStore } from '@/store';
-  import { onMounted } from 'vue';
+  import MdPreview from '@/components/editor/preview.vue';
+  import { requestArticleInfo } from '@/api/article';
   import useFormProps from '@/hooks/form';
   import { FormModel } from '../data/form';
-  import Upload from '@/class/upload';
   import { watch } from 'vue';
-import { number } from 'echarts';
 
   /**
    * 定义调用该组件的父级组件中的传递属性
    */
-  defineProps({
+  const props = defineProps({
     visible: {
       type: Boolean as PropType<boolean>,
       default: false,
@@ -352,110 +297,50 @@ import { number } from 'echarts';
   const { t } = useI18n();
 
   /**
-   * 文章分类选项
-   */
-  const categoryOptions: any[] = reactive([]);
-  onMounted(async () => {
-    try {
-      const { data } = await requestArticleCategoryListSelect();
-      if (data.ok) {
-        // eslint-disable-next-line no-plusplus
-        for (let i = 0; i < data.data.list.length; i++) {
-          categoryOptions.push({
-            id: data.data.list[i].id,
-            name: data.data.list[i].name,
-          });
-        }
-      }
-    } catch (err) {
-      // you can report use errorHandler or other
-    }
-  });
-
-  /**
-   * 请求详情接口
-   */
-  onMounted(() => {
-
-  });
-
-  /**
    * 表单组件
    */
-  const {
+   const {
     propsForm,
+    eventFormResetFields,
   } = useFormProps(FormModel);
 
-  /**
-   * 图片上传组件
-   */
-  // 封面上传
-  const uploadCoverInS = new Upload();
   const coverFile = ref();
-  const uploadCoverName = 'cover';
-  const uploadCoverFileStream = (option: RequestOption) => {
-    const isUploadSuccess = ref(false);
-    uploadCoverInS.uploadFileStream(uploadCoverName, option);
-    // 定时器
-    const timer = setInterval(function () {
-      const file = uploadCoverInS.getFile(uploadCoverName);
-      if (file && Reflect.has(file, 'url')) {
-        isUploadSuccess.value = true;
-        coverFile.value = file;
-        propsForm.fields.cover = file.url;
-        MessageSuccess('文件上传成功');
-      }
-    }, 1000);
-    watch(
-      () => isUploadSuccess.value,
-      (value) => {
-        if (value === true) {
-          clearInterval(timer);
+  
+  watch(
+    () => props.id,
+    async (value) => {
+      eventFormResetFields();
+      // 请求详情接口
+      const { data } = await requestArticleInfo(value);
+      if (data.ok) {
+        propsForm.fields.title = data.data.title;
+        propsForm.fields.user_id = data.data.user_id.toString();
+        propsForm.fields.author = data.data.author;
+        propsForm.fields.cover = data.data.cover;
+        propsForm.fields.summary = data.data.summary;
+        propsForm.fields.status = data.data.status === 1;
+        propsForm.fields.sort = data.data.sort;
+        propsForm.fields.content = data.data.content;
+        data.data.category.forEach((item) => {
+          propsForm.fields.category.push(item.name);
+        });
+        if (data.data.commented_flag) {
+          propsForm.fields.commented_flag = true;
+        } else {
+          propsForm.fields.commented_flag = false;
         }
-      }
-    );
-  };
-  const uploadCoverChange = (_: any, currentFile: any) => {
-    uploadCoverInS.uploadChange(uploadCoverName, _, currentFile);
-    coverFile.value = uploadCoverInS.getFile(uploadCoverName);
-  };
-  const uploadCoverProgress = (currentFile: any) => {
-    uploadCoverInS.uploadProgress(uploadCoverName, currentFile);
-    coverFile.value = uploadCoverInS.getFile(uploadCoverName);
-  };
+        if (data.data.recommend_flag) {
+          propsForm.fields.recommend_flag = true;
+        } else {
+          propsForm.fields.recommend_flag = false;
+        }
+        propsForm.fields.source = data.data.source;
+        propsForm.fields.source_url = data.data.source_url;
+        propsForm.fields.keyword = data.data.keyword;
+        propsForm.fields.attachment_path = data.data.attachment_path;
 
-  // 附件上传
-  const uploadAttachmentPathInS = new Upload();
-  const attachmentPathFile = ref();
-  const uploadAttachmentPathName = 'attachmentPath';
-  const uploadAttachmentPathFileStream = (option: RequestOption) => {
-    const isUploadSuccess = ref(false);
-    uploadAttachmentPathInS.uploadFileStream(uploadAttachmentPathName, option);
-    // 定时器
-    const timer = setInterval(function () {
-      const file = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
-      if (file && Reflect.has(file, 'url')) {
-        isUploadSuccess.value = true;
-        attachmentPathFile.value = file;
-        propsForm.fields.attachment_path = file.url;
-        MessageSuccess('文件上传成功');
+        coverFile.value = { url: propsForm.fields.cover };
       }
-    }, 1000);
-    watch(
-      () => isUploadSuccess.value,
-      (value) => {
-        if (value === true) {
-          clearInterval(timer);
-        }
-      }
-    );
-  };
-  const uploadAttachmentPathChange = (_: any, currentFile: any) => {
-    uploadAttachmentPathInS.uploadChange(uploadAttachmentPathName, _, currentFile);
-    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
-  };
-  const uploadAttachmentPathProgress = (currentFile: any) => {
-    uploadAttachmentPathInS.uploadProgress(uploadAttachmentPathName, currentFile);
-    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
-  };
+    }
+  );
 </script>

@@ -53,7 +53,7 @@ export const ListColumns = (t: ComposerTranslation) : TableColumnData[] => [
         title: t('articleList.columns.category'),
         dataIndex: 'category',
         slotName: 'category',
-        width: 200,
+        width: 320,
     },
     {
         title: t('articleList.columns.publisher'),

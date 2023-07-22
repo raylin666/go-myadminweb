@@ -1,6 +1,12 @@
 import { reactive } from "vue";
-import { FormModel } from "@/types/global";
+import { FormModel, HttpResponse } from "@/types/global";
 import { cloneDeep } from "lodash";
+import { ValidatedError } from "@arco-design/web-vue";
+import { AxiosResponse } from "axios";
+import { MessageSuccess } from "@/utils/notification";
+
+// 表单布局模式
+type FormLayoutProps = "vertical" | "inline" | "horizontal" | undefined;
 
 export default function useFormProps(fields: FormModel) {
   // 获取初始化表单模型数据
@@ -9,12 +15,14 @@ export default function useFormProps(fields: FormModel) {
   };
 
   const propsForm = reactive({
+    // 表单布局模式
+    layoutMode: <FormLayoutProps>'vertical',
     // 存储表单模型数据 - 对应 form 字段
     fields: <FormModel>getInitFields(),
   });
 
   // 重置搜索表单模型数据
-  const eventFormResetSearchFields = () => {
+  const eventFormResetFields = () => {
     propsForm.fields = getInitFields();
   };
 
@@ -23,9 +31,52 @@ export default function useFormProps(fields: FormModel) {
 
   };
 
+  // 表单提交逻辑处理
+  const eventFormSubmit = async ({
+    errors,
+    values,
+  }: {
+    errors: Record<string, ValidatedError> | undefined;
+    values: Record<string, any>;
+  }) => {
+    // console.log('values:', values, '\nerrors:', errors);
+  };
+
+  // 表单提交成功逻辑处理
+  const eventFormSubmitSuccess = async ({
+    errors,
+    values,
+  }: {
+    errors: Record<string, ValidatedError> | undefined;
+    values: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  }, 
+  api: Promise<AxiosResponse<HttpResponse, any>>,
+  callback: () => void, 
+  text: string) => {
+    const { data } = await api;
+    if (data.ok) {
+      MessageSuccess(`${text} - 创建成功`);
+      callback();
+    }
+  };
+
+  // 表单提交失败逻辑处理
+  const eventFormSubmitFailed = async ({
+    errors,
+    values,
+  }: {
+    errors: Record<string, ValidatedError> | undefined;
+    values: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  }) => {};
+
   return {
     propsForm,
-    eventFormResetSearchFields,
+    eventFormResetFields,
     eventFormSearch,
+    eventFormSubmit,
+    eventFormSubmitSuccess,
+    eventFormSubmitFailed,
   };
 }

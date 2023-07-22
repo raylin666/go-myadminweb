@@ -32,7 +32,7 @@ export function requestArticleList(params: ArticleListParams | TRequestParams) {
  */
 export function requestArticleAdd(params: ArticleAddParams) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.post<ArticleAddResponse>(`/article/add`, params);
+  return axios.post<HttpResponse<ArticleAddResponse>>(`/article/add`, params);
 }
 
 /**
@@ -81,6 +81,6 @@ export function requestArticleCategoryList() {
  */
 export function requestArticleCategoryListSelect() {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.get<ArticleCategoryListSelectResponse>('/article/category/list/select');
+  return axios.get<HttpResponse<ArticleCategoryListSelectResponse>>('/article/category/list/select');
 }
 

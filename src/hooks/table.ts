@@ -69,6 +69,10 @@ export function useTableProps(api: ApiListFn) {
       rowSelectDelete: <boolean>false,
       // 新增数据开关
       AddDrawer: <boolean>false,
+      // 更新数据开关
+      UpdateDrawer: <boolean>false,
+      // 详情数据开关
+      InfoDrawer: <boolean>false,
     },
     // 分页
     pagination: <Pagination>{
@@ -298,7 +302,7 @@ export function useTableProps(api: ApiListFn) {
 
   // 事件 - 点击删除操作弹窗确认提示
   const eventTableDeletePopConfirm = (content: string) => {
-    return `确认要删除 ${content} 吗?`;
+    return `确认要删除 ${content}吗?`;
   };
 
   // 事件 - 点击批量选择删除操作弹窗确认提示

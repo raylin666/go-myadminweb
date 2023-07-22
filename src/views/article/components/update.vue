@@ -295,12 +295,11 @@
               >
                 <a-upload
                   v-model="propsForm.fields.attachment_path"
-                  :file-list="attachmentPathFile ? attachmentPathFile : []"
+                  :file-list="attachmentPathFile ? [attachmentPathFile] : []"
                   :limit="5"
                   list-type="picture"
                   draggable
                   :custom-request="uploadAttachmentPathFileStream"
-                  :on-before-remove="uploadAttachmentPathFileRemove"
                   @change="uploadAttachmentPathChange"
                   @progress="uploadAttachmentPathProgress"
                 >
@@ -326,8 +325,8 @@
   import IconPlus from '@arco-design/web-vue/es/icon/icon-plus';
   import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
   import MdEditor from '@/components/editor/index.vue';
-  import { FileItem, RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
-  import { MessageSuccess } from '@/utils/notification';
+  import { RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
+  import { MessageSuccess, NotificationError, NotificationWarning } from '@/utils/notification';
   import { requestArticleCategoryListSelect, requestArticleAdd } from '@/api/article';
   import { useUserStore } from '@/store';
   import { onMounted } from 'vue';
@@ -335,7 +334,6 @@
   import { FormModel } from '../data/form';
   import Upload from '@/class/upload';
   import { watch } from 'vue';
-import { cloneDeep } from 'lodash';
 
   /**
    * 定义调用该组件的父级组件中的传递属性
@@ -390,9 +388,12 @@ import { cloneDeep } from 'lodash';
             name: data.data.list[i].name,
           });
         }
+      } else {
+        NotificationWarning('获取文章分类选择数据失败');
       }
     } catch (err) {
       // you can report use errorHandler or other
+      NotificationError('请求错误, 获取文章分类选择数据失败');
     }
   });
 
@@ -436,7 +437,7 @@ import { cloneDeep } from 'lodash';
 
   // 附件上传
   const uploadAttachmentPathInS = new Upload();
-  const attachmentPathFile = ref([]);
+  const attachmentPathFile = ref();
   const uploadAttachmentPathName = 'attachmentPath';
   const uploadAttachmentPathFileStream = (option: RequestOption) => {
     const isUploadSuccess = ref(false);
@@ -446,8 +447,8 @@ import { cloneDeep } from 'lodash';
       const file = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
       if (file && Reflect.has(file, 'url')) {
         isUploadSuccess.value = true;
-        attachmentPathFile.value.push({ uid: file.uid, name: file.name, url: file.url });
-        propsForm.fields.attachment_path.push(file.url);
+        attachmentPathFile.value = file;
+        propsForm.fields.attachment_path = file.url;
         MessageSuccess('文件上传成功');
       }
     }, 1000);
@@ -462,27 +463,11 @@ import { cloneDeep } from 'lodash';
   };
   const uploadAttachmentPathChange = (_: any, currentFile: any) => {
     uploadAttachmentPathInS.uploadChange(uploadAttachmentPathName, _, currentFile);
+    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
   };
   const uploadAttachmentPathProgress = (currentFile: any) => {
     uploadAttachmentPathInS.uploadProgress(uploadAttachmentPathName, currentFile);
-  };
-  const uploadAttachmentPathFileRemove = (fileItem: FileItem) => {
-    const newArray : string[] = [];
-    const newLocalArray : [] = [];
-    propsForm.fields.attachment_path.forEach((url: any) => {
-      if (url !== fileItem.url) {
-        newArray.push(url);
-      }
-    });
-    propsForm.fields.attachment_path = newArray;
-
-    const cloneAttachmentPathFile = cloneDeep(attachmentPathFile.value);
-    cloneAttachmentPathFile.forEach((item: any) => {
-      if (item.url !== fileItem.url) {
-        newLocalArray.push(item);
-      }
-    });
-    attachmentPathFile.value = newLocalArray;
+    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
   };
 
   /**

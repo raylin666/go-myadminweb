@@ -3,6 +3,16 @@
     <AddArticleDrawerPage
       :visible="propsTable.visible.AddDrawer"
       @cancel="() => propsTable.visible.AddDrawer = false"
+      @form-callback-success="formCallbackSuccess"
+    />
+    <UpdateArticleDrawerPage
+      :visible="propsTable.visible.UpdateDrawer"
+      @cancel="() => propsTable.visible.UpdateDrawer = false"
+      @form-callback-success="formCallbackSuccess"
+    />
+    <InfoArticleDrawerPage
+      :visible="propsTable.visible.InfoDrawer"
+      @cancel="() => propsTable.visible.InfoDrawer = false"
     />
 
     <Breadcrumb :items="['menu.article', 'menu.article.list']" />
@@ -96,7 +106,7 @@
               </template>
               {{ $t('search.form.search') }}
             </a-button>
-            <a-button @click="eventFormResetSearchFields">
+            <a-button @click="eventFormResetFields">
               <template #icon>
                 <icon-refresh />
               </template>
@@ -298,16 +308,16 @@
           </a-switch>
         </template>
         <template #operations="{ record }">
-          <a-button v-permission="['admin']" type="primary" size="mini">
+          <a-button v-permission="['admin']" type="primary" size="mini" @click="() => propsTable.visible.InfoDrawer = true">
             {{ $t('articleList.columns.operations.info') }}
           </a-button>
           &nbsp;
-          <a-button v-permission="['admin']" status="warning" size="mini">
+          <a-button v-permission="['admin']" status="warning" size="mini" @click="() => propsTable.visible.UpdateDrawer = true">
             {{ $t('articleList.columns.operations.edit') }}
           </a-button>
           &nbsp;
           <a-popconfirm
-            :content="eventTableDeletePopConfirm(`${record.title} 这篇文章`)"
+            :content="eventTableDeletePopConfirm(`[${record.title}] 这篇文章`)"
             type="warning"
             position="left"
             @ok="deleteTableDataLine(requestArticleDelete(record.id), record.title)"
@@ -328,7 +338,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import {
     requestArticleList,
@@ -338,12 +347,14 @@
   } from '@/api/article';
   import { TRequestParams } from '@/types/global';
   import AddArticleDrawerPage from './components/add.vue';
+  import UpdateArticleDrawerPage from './components/update.vue';
+  import InfoArticleDrawerPage from './components/info.vue';
   import getRandColor from '@/utils/color';
   import { ArticleListParams } from '@/types/article';
   import useFormProps from '@/hooks/form';
   import { useTableProps, getDensityListOptions } from '@/hooks/table';
   import { ListColumns, getStatusOptions, getRecommendOptions } from './data/table';
-  import { FormModel, FormModelInterface } from './data/form'
+  import { searchFormModel } from './data/form'
 
   /**
    * 国际语言
@@ -370,10 +381,10 @@
     eventTablePopupVisibleChange,
     eventTableRowSelected,
     eventTableRowSelectedAll,
+    eventTableSelectDeletePopConfirm,
     visibleTableAttributeChecked,
     updateTableFieldAttribute,
     deleteTableDataLine,
-    eventTableSelectDeletePopConfirm,
     deleteTableDataSelectBatchLine,
   } = useTableProps(apiDataListFn);
 
@@ -414,9 +425,14 @@
    */
   const {
     propsForm,
-    eventFormResetSearchFields,
+    eventFormResetFields,
     eventFormSearch,
-  } = useFormProps(FormModel);
+  } = useFormProps(searchFormModel);
+
+  // 新增/修改 表单提交成功后的回调处理
+  const formCallbackSuccess = () => {
+    getTableDataList();
+  };
 </script>
 
 <script lang="ts">

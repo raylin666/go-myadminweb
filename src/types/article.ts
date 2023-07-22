@@ -71,6 +71,7 @@ export interface ArticleCategoryListSelectResponse {
 }
 
 export interface ArticleAddParams {
+    user_id: number;
     title: string;
     author: string;
     summary: string;

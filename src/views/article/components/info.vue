@@ -4,8 +4,7 @@
     :visible="visible"
     unmount-on-close
     :mask-closable="false"
-    @ok="handleDrawerOk"
-    @cancel="emit('cancel')"
+    @ok="emit('cancel')"
   >
     <template #title> {{ t('article.form.basic.add.title') }} </template>
 
@@ -15,9 +14,6 @@
         <a-form
           :model="propsForm.fields"
           :layout="propsForm.layoutMode"
-          @submit="eventFormSubmit"
-          @submit-failed="eventFormSubmitFailed"
-          @submit-success="handleSubmitSuccess"
         >
           <a-row :gutter="24">
             <a-col :span="24">
@@ -295,12 +291,11 @@
               >
                 <a-upload
                   v-model="propsForm.fields.attachment_path"
-                  :file-list="attachmentPathFile ? attachmentPathFile : []"
+                  :file-list="attachmentPathFile ? [attachmentPathFile] : []"
                   :limit="5"
                   list-type="picture"
                   draggable
                   :custom-request="uploadAttachmentPathFileStream"
-                  :on-before-remove="uploadAttachmentPathFileRemove"
                   @change="uploadAttachmentPathChange"
                   @progress="uploadAttachmentPathProgress"
                 >
@@ -308,11 +303,6 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <a-button
-            id="form-submit"
-            html-type="submit"
-            style="display: none"
-          ></a-button>
         </a-form>
       </a-space>
     </div>
@@ -324,10 +314,9 @@
   import { useI18n } from 'vue-i18n';
   import IconEdit from '@arco-design/web-vue/es/icon/icon-edit';
   import IconPlus from '@arco-design/web-vue/es/icon/icon-plus';
-  import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
   import MdEditor from '@/components/editor/index.vue';
-  import { FileItem, RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
-  import { MessageSuccess } from '@/utils/notification';
+  import { RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
+  import { MessageSuccess, NotificationError, NotificationWarning } from '@/utils/notification';
   import { requestArticleCategoryListSelect, requestArticleAdd } from '@/api/article';
   import { useUserStore } from '@/store';
   import { onMounted } from 'vue';
@@ -335,7 +324,7 @@
   import { FormModel } from '../data/form';
   import Upload from '@/class/upload';
   import { watch } from 'vue';
-import { cloneDeep } from 'lodash';
+import { number } from 'echarts';
 
   /**
    * 定义调用该组件的父级组件中的传递属性
@@ -345,35 +334,22 @@ import { cloneDeep } from 'lodash';
       type: Boolean as PropType<boolean>,
       default: false,
     },
+    id: {
+      type: Number as PropType<number>,
+      default: 0,
+    },
   });
 
   /**
    * 定义调用该组件的父级组件中的传递方法
    *    cancel: 关闭抽屉
-   *    formCallbackSuccess: 表单提交成功后回调处理函数
    */
-  const emit = defineEmits(['cancel', 'formCallbackSuccess']);
+  const emit = defineEmits(['cancel']);
 
   /**
    * 国际语言
    */
   const { t } = useI18n();
-
-  /**
-   * 表单组件
-   */
-  const {
-    propsForm,
-    eventFormResetFields,
-    eventFormSubmit,
-    eventFormSubmitSuccess,
-    eventFormSubmitFailed,
-  } = useFormProps(FormModel);
-
-  /**
-   * 用户存储
-   */
-  const userStore = useUserStore();
 
   /**
    * 文章分类选项
@@ -395,6 +371,20 @@ import { cloneDeep } from 'lodash';
       // you can report use errorHandler or other
     }
   });
+
+  /**
+   * 请求详情接口
+   */
+  onMounted(() => {
+
+  });
+
+  /**
+   * 表单组件
+   */
+  const {
+    propsForm,
+  } = useFormProps(FormModel);
 
   /**
    * 图片上传组件
@@ -436,7 +426,7 @@ import { cloneDeep } from 'lodash';
 
   // 附件上传
   const uploadAttachmentPathInS = new Upload();
-  const attachmentPathFile = ref([]);
+  const attachmentPathFile = ref();
   const uploadAttachmentPathName = 'attachmentPath';
   const uploadAttachmentPathFileStream = (option: RequestOption) => {
     const isUploadSuccess = ref(false);
@@ -446,8 +436,8 @@ import { cloneDeep } from 'lodash';
       const file = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
       if (file && Reflect.has(file, 'url')) {
         isUploadSuccess.value = true;
-        attachmentPathFile.value.push({ uid: file.uid, name: file.name, url: file.url });
-        propsForm.fields.attachment_path.push(file.url);
+        attachmentPathFile.value = file;
+        propsForm.fields.attachment_path = file.url;
         MessageSuccess('文件上传成功');
       }
     }, 1000);
@@ -462,82 +452,10 @@ import { cloneDeep } from 'lodash';
   };
   const uploadAttachmentPathChange = (_: any, currentFile: any) => {
     uploadAttachmentPathInS.uploadChange(uploadAttachmentPathName, _, currentFile);
+    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
   };
   const uploadAttachmentPathProgress = (currentFile: any) => {
     uploadAttachmentPathInS.uploadProgress(uploadAttachmentPathName, currentFile);
-  };
-  const uploadAttachmentPathFileRemove = (fileItem: FileItem) => {
-    const newArray : string[] = [];
-    const newLocalArray : [] = [];
-    propsForm.fields.attachment_path.forEach((url: any) => {
-      if (url !== fileItem.url) {
-        newArray.push(url);
-      }
-    });
-    propsForm.fields.attachment_path = newArray;
-
-    const cloneAttachmentPathFile = cloneDeep(attachmentPathFile.value);
-    cloneAttachmentPathFile.forEach((item: any) => {
-      if (item.url !== fileItem.url) {
-        newLocalArray.push(item);
-      }
-    });
-    attachmentPathFile.value = newLocalArray;
-  };
-
-  /**
-   * 抽屉组件确认逻辑处理
-   */
-  const handleDrawerOk = () => {
-    // 触发表单提交
-    const formSubmit = document.getElementById('form-submit');
-    if (formSubmit) {
-      formSubmit.click();
-    }
-  };
-
-  /**
-   * 表单提交成功逻辑处理
-   */
-  const handleSubmitSuccess = async ({
-    errors,
-    values,
-  }: {
-    errors: Record<string, ValidatedError> | undefined;
-    values: Record<string, any>;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-  }) => {
-    const requestFn = requestArticleAdd({
-      user_id: userStore.id,
-      title: propsForm.fields.title,
-      author: propsForm.fields.author ? propsForm.fields.author : '',
-      summary: propsForm.fields.summary,
-      cover: propsForm.fields.cover,
-      sort: propsForm.fields.sort,
-      recommend_flag: propsForm.fields.recommend_flag,
-      commented_flag: propsForm.fields.commented_flag,
-      status: propsForm.fields.status ? 1 : 0,
-      source: propsForm.fields.source,
-      source_url: propsForm.fields.source_url,
-      content: propsForm.fields.content,
-      keyword: propsForm.fields.keyword,
-      attachment_path: propsForm.fields.attachment_path,
-      category: propsForm.fields.category,
-    });
-
-    eventFormSubmitSuccess(
-      { errors, values }, 
-      requestFn, 
-      function () {
-        // 重置表单
-        eventFormResetFields();
-        coverFile.value = null;
-        // 关闭抽屉
-        emit('cancel');
-        // 更新列表
-        emit('formCallbackSuccess');
-      },
-      `文章 ${propsForm.fields.title}`
-    );
+    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
   };
 </script>

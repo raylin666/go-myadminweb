@@ -116,11 +116,12 @@ export function useTableProps(api: ApiListFn) {
       propsTable.data = data;
       propsTable.pagination.current = data.data.current_page ? data.data.current_page : DEFAULT_PAGE_NUM;
       propsTable.pagination.pageSize = data.data.size ? data.data.size : DEFAULT_PAGE_SIZE;
-      propsTable.pagination.total = data.data.total;
       // 列表数据 propsTable.data.data.list
       if (propsTable.data.data.list) {
         propsTable.list = propsTable.data.data.list;
       }
+
+      propsTable.pagination.total = data.data.total ? data.data.total : propsTable.list.length;
     } catch (err) {
       // you can report use errorHandler or other
     } finally {

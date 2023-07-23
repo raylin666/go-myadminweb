@@ -1,10 +1,8 @@
 import axios from 'axios';
 import qs from 'query-string';
 import {
-  ArticleList,
   ArticleListParams,
   ArticleListResponse,
-  ArticleCategoryList,
   ArticleCategoryListResponse,
   ArticleCategoryListSelectResponse,
   ArticleAddOrUpdateParams,

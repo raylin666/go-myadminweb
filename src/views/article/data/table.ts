@@ -48,6 +48,7 @@ export const ListColumns = (t: ComposerTranslation) : TableColumnData[] => [
         title: t('articleList.columns.cover'),
         dataIndex: 'cover',
         slotName: 'cover',
+        width: 80,
     },
     {
         title: t('articleList.columns.category'),
@@ -64,16 +65,19 @@ export const ListColumns = (t: ComposerTranslation) : TableColumnData[] => [
         title: t('articleList.columns.status'),
         dataIndex: 'status',
         slotName: 'status',
+        width: 100,
     },
     {
         title: t('articleList.columns.recommend'),
         dataIndex: 'recommend_flag',
         slotName: 'recommend_flag',
+        width: 100,
     },
     {
         title: t('articleList.columns.commented'),
         dataIndex: 'commented_flag',
         slotName: 'commented_flag',
+        width: 100,
     },
     {
         title: t('articleList.columns.timeAt'),
@@ -84,14 +88,17 @@ export const ListColumns = (t: ComposerTranslation) : TableColumnData[] => [
     {
         title: t('articleList.columns.sort'),
         dataIndex: 'sort',
+        width: 80,
     },
     {
         title: t('articleList.columns.viewCount'),
         dataIndex: 'view_count',
+        width: 80,
     },
     {
         title: t('articleList.columns.commentCount'),
         dataIndex: 'comment_count',
+        width: 80,
     },
     {
         title: t('articleList.columns.operations'),

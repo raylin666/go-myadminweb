@@ -17,81 +17,58 @@
       @cancel="() => propsTable.visible.InfoDrawer = false"
     />
 
-    <Breadcrumb :items="['menu.article', 'menu.article.list']" />
-    <a-card class="general-card" :title="$t('menu.article.list')">
+    <Breadcrumb :items="['menu.ai', 'menu.chatbot.list']" />
+    <a-card class="general-card" :title="$t('menu.chatbot.list')">
       <a-row>
         <a-col :flex="1">
           <a-form
             :model="propsForm.fields"
-            :label-col-props="{ span: 6 }"
-            :wrapper-col-props="{ span: 18 }"
+            :label-col-props="{ span: 3 }"
+            :wrapper-col-props="{ span: 21 }"
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
                   field="number"
-                  :label="$t('articleList.form.number')"
+                  :label="$t('chatbot.form.number')"
                 >
                   <a-input
                     v-model="propsForm.fields.number"
-                    :placeholder="$t('articleList.form.number.placeholder')"
+                    :placeholder="$t('chatbot.form.number.placeholder')"
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
-                  field="title"
-                  :label="$t('articleList.form.title')"
+                  field="name"
+                  :label="$t('chatbot.form.name')"
                 >
                   <a-input
-                    v-model="propsForm.fields.title"
-                    :placeholder="$t('articleList.form.title.placeholder')"
+                    v-model="propsForm.fields.name"
+                    :placeholder="$t('chatbot.form.name.placeholder')"
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
-                  field="category"
-                  :label="$t('articleList.form.category')"
+                  field="pid"
+                  :label="$t('chatbot.form.pid')"
                 >
                   <a-select
-                    v-model="propsForm.fields.category"
+                    v-model="propsForm.fields.pid"
                     :placeholder="$t('search.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="created_at"
-                  :label="$t('articleList.form.createdAt')"
-                >
-                  <a-range-picker
-                    v-model="propsForm.fields.createdAt"
-                    style="width: 100%"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
                   field="status"
-                  :label="$t('articleList.form.status')"
+                  :label="$t('chatbot.form.status')"
                 >
                   <a-select
                     v-model="propsForm.fields.status"
                     :options="statusOptions"
-                    :placeholder="$t('search.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="recommend"
-                  :label="$t('articleList.form.recommend')"
-                >
-                  <a-select
-                    v-model="propsForm.fields.recommend"
-                    :options="recommendOptions"
                     :placeholder="$t('search.form.selectDefault')"
                   />
                 </a-form-item>
@@ -125,37 +102,8 @@
               <template #icon>
                 <icon-plus />
               </template>
-              {{ $t('articleList.create') }}
+              {{ $t('chatbot.create') }}
             </a-button>
-            <a-button
-              type="primary"
-              status="danger"
-              @click="eventTableSelectDeletePopConfirm"
-            >
-              <template #icon>
-                <icon-minus />
-              </template>
-              {{ $t('action.operation.delete') }}
-            </a-button>
-            <a-modal
-              v-model:visible="propsTable.visible.rowSelectDelete"
-              @ok="deleteTableDataSelectBatchLine(requestArticleBatchDelete(propsTable.tableRowSelectedKeys))"
-            >
-              <template #title
-                ><icon-exclamation-circle
-                  size="20"
-                  style="color: orange"
-                />&nbsp;&nbsp;
-                <span style="font-size: 16px; color: orange"
-                  >温馨提示</span
-                ></template
-              >
-              <div
-                style="font-weight: 200; font-size: medium; text-align: center"
-                >您必须要谨慎作出选择, 确认要删除所选的
-                {{ propsTable.tableRowSelectedKeys.length }} 篇文章吗 ?</div
-              >
-            </a-modal>
           </a-space>
         </a-col>
         <a-col
@@ -225,39 +173,16 @@
         :size="propsTable.tableSize"
         :bordered="{ 'wrapper': true, 'headerCell': true }"
         :stripe="true"
-        :row-selection="propsTable.tableRowSelection"
-        :selected-keys="propsTable.tableRowSelectedKeys"
+        v-model:expandedKeys="expandedKeys"
+        :hide-expand-button-on-empty="false"
         :scroll="{ x: 2000 }"
         @page-change="eventTablePageChange"
-        @select-all="eventTableRowSelectedAll"
         @select="eventTableRowSelected"
       >
-        <template #cover="{ record }">
-          <a-avatar :size="54" shape="square">
-            <img :alt="record.cover" :src="record.cover" />
-          </a-avatar>
-        </template>
-        <template #publisher_user="{ record }">
-          {{ record.author }} (ID: {{ record.user_id }})
-        </template>
         <template #time_at="{ record }">
           <span style="color: #0960bd">{{ record.created_at }}</span>
           <br />
           <span style="color: orchid">{{ record.updated_at }}</span>
-        </template>
-        <template #category="{ record }">
-          <a-tag
-            v-for="(item, index) in record.category"
-            :key="index"
-            bordered
-            :color="item.color"
-            style="margin-right: 5px; margin-bottom: 5px;"
-          >
-            <template #icon>
-              <icon-tag />
-            </template>
-            {{ item.name }}
-          </a-tag>
         </template>
         <template #status="{ record, rowIndex }">
           <a-switch
@@ -274,53 +199,20 @@
             <template #unchecked-icon><icon-close/></template>
           </a-switch>
         </template>
-        <template #recommend_flag="{ record, rowIndex }">
-          <a-switch
-            :v-model="propsTable.list[rowIndex].recommend_flag"
-            :default-checked="
-              visibleTableAttributeRecommendChecked(record)
-            "
-            checked-color="#16c516"
-            unchecked-color="red"
-            type="round"
-            @change="eventTableAttributeRecommendChange(record, rowIndex)"
-          >
-            <template #checked>已推荐</template>
-            <template #unchecked>未推荐</template>
-            <template #checked-icon><icon-check/></template>
-            <template #unchecked-icon><icon-close/></template>
-          </a-switch>
-        </template>
-        <template #commented_flag="{ record, rowIndex}">
-          <a-switch
-            :default-checked="
-              visibleTableAttributeCommentedChecked(record)
-            "
-            checked-color="#16c516"
-            unchecked-color="red"
-            type="round"
-            @change="eventTableAttributeCommentedChange(record, rowIndex)"
-          >
-            <template #checked>已启用</template>
-            <template #unchecked>已禁用</template>
-            <template #checked-icon><icon-check/></template>
-            <template #unchecked-icon><icon-close/></template>
-          </a-switch>
-        </template>
         <template #operations="{ record }">
           <a-button v-permission="['admin']" type="primary" size="mini" @click="infoAction(record.id)">
-            {{ $t('articleList.columns.operations.info') }}
+            {{ $t('chatbot.columns.operations.info') }}
           </a-button>
           &nbsp;
           <a-button v-permission="['admin']" status="warning" size="mini" @click="updateAction(record.id)">
-            {{ $t('articleList.columns.operations.edit') }}
+            {{ $t('chatbot.columns.operations.edit') }}
           </a-button>
           &nbsp;
           <a-popconfirm
-            :content="eventTableDeletePopConfirm(`[${record.title}] 这篇文章`)"
+            :content="eventTableDeletePopConfirm(`[${record.title}] 场景分类`)"
             type="warning"
             position="left"
-            @ok="deleteTableDataLine(requestArticleDelete(record.id), record.title)"
+            @ok="deleteTableDataLine(requestChatbotDelete(record.id), record.title)"
           >
             <a-button
               v-permission="['admin']"
@@ -328,7 +220,7 @@
               status="danger"
               size="mini"
             >
-              {{ $t('articleList.columns.operations.delete') }}
+              {{ $t('chatbot.columns.operations.delete') }}
             </a-button>
           </a-popconfirm>
         </template>
@@ -338,22 +230,21 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, reactive, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import {
-    requestArticleList,
-    requestArticleDelete,
-    requestArticleBatchDelete,
-    requestArticleUpdateField,
-  } from '@/api/article';
+    requestChatbotList,
+    requestChatbotUpdateField,
+    requestChatbotDelete,
+  } from '@/api/chatbot';
   import { TRequestParams } from '@/types/global';
   import AddArticleDrawerPage from './components/add.vue';
   import UpdateArticleDrawerPage from './components/update.vue';
   import InfoArticleDrawerPage from './components/info.vue';
-  import { ArticleListParams } from '@/types/article';
+  import { ChatbotListParams } from '@/types/chatbot';
   import useFormProps from '@/hooks/form';
   import { useTableProps, getDensityListOptions } from '@/hooks/table';
-  import { ListColumns, getStatusOptions, getRecommendOptions } from './data/table';
+  import { ListColumns, getStatusOptions } from './data/table';
   import { searchFormModel } from './data/form'
 
   /**
@@ -365,8 +256,8 @@
    * 表格组件
    */
   // 列表接口请求函数
-  const apiDataListFn = (params: ArticleListParams | TRequestParams) => {
-    return requestArticleList(params);
+  const apiDataListFn = (params: ChatbotListParams | TRequestParams) => {
+    return requestChatbotList(params);
   };
 
   const { 
@@ -380,12 +271,9 @@
     eventTableDeletePopConfirm,
     eventTablePopupVisibleChange,
     eventTableRowSelected,
-    eventTableRowSelectedAll,
-    eventTableSelectDeletePopConfirm,
     visibleTableAttributeChecked,
     updateTableFieldAttribute,
     deleteTableDataLine,
-    deleteTableDataSelectBatchLine,
   } = useTableProps(apiDataListFn);
 
   // 表格列字段设定
@@ -395,8 +283,17 @@
   const densityListOptions = getDensityListOptions(t);
   // 获取状态选项配置
   const statusOptions = getStatusOptions(t);
-  // 获取推荐选项配置
-  const recommendOptions = getRecommendOptions(t);
+
+  // 树形数据展开所有
+  const expandedKeys = ref([]);
+  watch(
+    () => propsTable.list,
+    (list) => {
+      list.forEach((item: any) => {
+        expandedKeys.value.push(item.id);
+      });
+    }
+  );
 
   /**
    * 表格属性更新处理
@@ -411,31 +308,7 @@
     const callback = function () {
       propsTable.list[rowIndex].status = value;
     };
-    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'status', value.toString()), '文章状态', callback);
-  };
-  // 表格推荐改变事件
-  const visibleTableAttributeRecommendChecked = (record: any) => {
-    visibleTableAttributeChecked(record.recommend_flag)
-    return record.recommend_flag === 1;
-  };
-  const eventTableAttributeRecommendChange = (record: any, rowIndex: any) => {
-    const value = record.recommend_flag === 1 ? 0 : 1;
-    const callback = function () {
-      propsTable.list[rowIndex].recommend_flag = value;
-    };
-    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'recommend_flag', value.toString()), '文章推荐', callback);
-  };
-  // 表格可评论改变事件
-  const visibleTableAttributeCommentedChecked = (record: any) => {
-    visibleTableAttributeChecked(record.commented_flag)
-    return record.commented_flag === 1;
-  };
-  const eventTableAttributeCommentedChange = (record: any, rowIndex: any) => {
-    const value = record.commented_flag === 1 ? 0 : 1;
-    const callback = function () {
-      propsTable.list[rowIndex].commented_flag = value;
-    };
-    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'commented_flag', value.toString()), '文章评论', callback);
+    updateTableFieldAttribute(requestChatbotUpdateField(record.id, 'status', value.toString()), '分类状态', callback);
   };
 
   /**

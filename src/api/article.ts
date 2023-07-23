@@ -7,8 +7,8 @@ import {
   ArticleCategoryList,
   ArticleCategoryListResponse,
   ArticleCategoryListSelectResponse,
-  ArticleAddParams,
-  ArticleAddResponse,
+  ArticleAddOrUpdateParams,
+  ArticleAddOrUpdateResponse,
   ArticleInfoResponse,
 } from '@/types/article';
 import { HttpResponse, TRequestParams } from '@/types/global';
@@ -40,9 +40,18 @@ export function requestArticleInfo(id: string | number) {
  * 新增文章
  * @param params
  */
-export function requestArticleAdd(params: ArticleAddParams) {
+export function requestArticleAdd(params: ArticleAddOrUpdateParams) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.post<HttpResponse<ArticleAddResponse>>(`/article/add`, params);
+  return axios.post<HttpResponse<ArticleAddOrUpdateResponse>>(`/article/add`, params);
+}
+
+/**
+ * 更新文章
+ * @param params
+ */
+export function requestArticleUpdate(id: string | number, params: ArticleAddOrUpdateParams) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.put<HttpResponse<ArticleAddOrUpdateResponse>>(`/article/update/${id}`, params);
 }
 
 /**

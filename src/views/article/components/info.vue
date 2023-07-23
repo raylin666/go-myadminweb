@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    width="100%"
+    width="86%"
     :visible="visible"
     :id="id"
     unmount-on-close
@@ -160,6 +160,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -172,6 +174,8 @@
                 <a-switch v-model="propsForm.fields.recommend_flag" type="round">
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -188,6 +192,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -198,7 +204,7 @@
                 field="user_id"
                 :label="$t('article.form.basic.user_id')"
               >
-                <a-input v-model="propsForm.fields.user_id" allow-clear disabled />
+                <a-input v-model="propsForm.fields.user_id" disabled />
               </a-form-item>
             </a-col>
             <a-col :span="12">
@@ -211,6 +217,78 @@
                   allow-clear
                   disabled
                 />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row :gutter="24">
+            <a-col :span="12">
+              <a-form-item
+                field="comment_count"
+                :label="$t('article.form.basic.comment_count')"
+              >
+                <a-input v-model="propsForm.fields.comment_count" disabled />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                field="last_commented_at"
+                :label="$t('article.form.basic.last_commented_at')"
+              >
+                <a-input v-model="propsForm.fields.last_commented_at" disabled />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row :gutter="24">
+            <a-col :span="12">
+              <a-form-item
+                field="view_count"
+                :label="$t('article.form.basic.view_count')"
+              >
+                <a-input v-model="propsForm.fields.view_count" disabled />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                field="collection_count"
+                :label="$t('article.form.basic.collection_count')"
+              >
+                <a-input v-model="propsForm.fields.collection_count" disabled />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row :gutter="24">
+            <a-col :span="12">
+              <a-form-item
+                field="zan_count"
+                :label="$t('article.form.basic.zan_count')"
+              >
+                <a-input v-model="propsForm.fields.zan_count" disabled />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                field="share_count"
+                :label="$t('article.form.basic.share_count')"
+              >
+                <a-input v-model="propsForm.fields.share_count" disabled />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row :gutter="24">
+            <a-col :span="12">
+              <a-form-item
+                field="created_at"
+                :label="$t('article.form.basic.created_at')"
+              >
+                <a-input v-model="propsForm.fields.created_at" disabled />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                field="updated_at"
+                :label="$t('article.form.basic.updated_at')"
+              >
+                <a-input v-model="propsForm.fields.updated_at" disabled />
               </a-form-item>
             </a-col>
           </a-row>
@@ -243,7 +321,7 @@
               >
               <a-image-preview-group infinite>
                 <a-space v-for="(url, index) in propsForm.fields.attachment_path" :key="index">
-                  <a-image :src="url" width="100" height="100" />
+                  <a-image :src="url" width="100" height="100" style="margin-right: 20px;" />
                 </a-space>
               </a-image-preview-group>
               </a-form-item>
@@ -299,47 +377,57 @@
   /**
    * 表单组件
    */
-   const {
+  const {
     propsForm,
     eventFormResetFields,
   } = useFormProps(FormModel);
 
   const coverFile = ref();
-  
-  watch(
-    () => props.id,
-    async (value) => {
-      eventFormResetFields();
-      // 请求详情接口
-      const { data } = await requestArticleInfo(value);
-      if (data.ok) {
-        propsForm.fields.title = data.data.title;
-        propsForm.fields.user_id = data.data.user_id.toString();
-        propsForm.fields.author = data.data.author;
-        propsForm.fields.cover = data.data.cover;
-        propsForm.fields.summary = data.data.summary;
-        propsForm.fields.status = data.data.status === 1;
-        propsForm.fields.sort = data.data.sort;
-        propsForm.fields.content = data.data.content;
-        data.data.category.forEach((item) => {
-          propsForm.fields.category.push(item.name);
-        });
-        if (data.data.commented_flag) {
-          propsForm.fields.commented_flag = true;
-        } else {
-          propsForm.fields.commented_flag = false;
-        }
-        if (data.data.recommend_flag) {
-          propsForm.fields.recommend_flag = true;
-        } else {
-          propsForm.fields.recommend_flag = false;
-        }
-        propsForm.fields.source = data.data.source;
-        propsForm.fields.source_url = data.data.source_url;
-        propsForm.fields.keyword = data.data.keyword;
-        propsForm.fields.attachment_path = data.data.attachment_path;
 
-        coverFile.value = { url: propsForm.fields.cover };
+  watch(
+    () => props.visible,
+    async (value) => {
+      if (value === true) {
+        eventFormResetFields();
+        // 请求详情接口
+        const { data } = await requestArticleInfo(props.id);
+        if (data.ok) {
+          propsForm.fields.title = data.data.title;
+          propsForm.fields.user_id = data.data.user_id.toString();
+          propsForm.fields.author = data.data.author;
+          propsForm.fields.cover = data.data.cover;
+          propsForm.fields.summary = data.data.summary;
+          propsForm.fields.status = data.data.status === 1;
+          propsForm.fields.sort = data.data.sort;
+          propsForm.fields.content = data.data.content;
+          data.data.category.forEach((item) => {
+            propsForm.fields.category.push(item.name);
+          });
+          if (data.data.commented_flag) {
+            propsForm.fields.commented_flag = true;
+          } else {
+            propsForm.fields.commented_flag = false;
+          }
+          if (data.data.recommend_flag) {
+            propsForm.fields.recommend_flag = true;
+          } else {
+            propsForm.fields.recommend_flag = false;
+          }
+          propsForm.fields.view_count = data.data.view_count.toString();
+          propsForm.fields.comment_count = data.data.comment_count.toString();
+          propsForm.fields.collection_count = data.data.collection_count.toString();
+          propsForm.fields.zan_count = data.data.zan_count.toString();
+          propsForm.fields.share_count = data.data.share_count.toString();
+          propsForm.fields.last_commented_at = data.data.last_commented_at ? data.data.last_commented_at : '';
+          propsForm.fields.created_at = data.data.created_at;
+          propsForm.fields.updated_at = data.data.updated_at;
+          propsForm.fields.source = data.data.source;
+          propsForm.fields.source_url = data.data.source_url;
+          propsForm.fields.keyword = data.data.keyword;
+          propsForm.fields.attachment_path = data.data.attachment_path;
+
+          coverFile.value = { url: propsForm.fields.cover };
+        }
       }
     }
   );

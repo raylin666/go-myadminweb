@@ -218,6 +218,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -229,6 +231,8 @@
                 <a-switch v-model="propsForm.fields.recommend_flag" type="round">
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -244,6 +248,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -296,11 +302,12 @@
               >
                 <a-upload
                   v-model="propsForm.fields.attachment_path"
-                  :file-list="attachmentPathFile ? [attachmentPathFile] : []"
+                  :file-list="attachmentPathFile ? attachmentPathFile : []"
                   :limit="5"
                   list-type="picture"
                   draggable
                   :custom-request="uploadAttachmentPathFileStream"
+                  :on-before-remove="uploadAttachmentPathFileRemove"
                   @change="uploadAttachmentPathChange"
                   @progress="uploadAttachmentPathProgress"
                 >
@@ -326,23 +333,28 @@
   import IconPlus from '@arco-design/web-vue/es/icon/icon-plus';
   import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
   import MdEditor from '@/components/editor/index.vue';
-  import { RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
-  import { MessageSuccess, NotificationError, NotificationWarning } from '@/utils/notification';
-  import { requestArticleCategoryListSelect, requestArticleAdd } from '@/api/article';
+  import { FileItem, RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
+  import { MessageSuccess } from '@/utils/notification';
+  import { requestArticleCategoryListSelect, requestArticleUpdate, requestArticleInfo } from '@/api/article';
   import { useUserStore } from '@/store';
   import { onMounted } from 'vue';
   import useFormProps from '@/hooks/form';
   import { FormModel } from '../data/form';
   import Upload from '@/class/upload';
   import { watch } from 'vue';
+  import { cloneDeep } from 'lodash';
 
   /**
    * 定义调用该组件的父级组件中的传递属性
    */
-  defineProps({
+  const props = defineProps({
     visible: {
       type: Boolean as PropType<boolean>,
       default: false,
+    },
+    id: {
+      type: Number as PropType<number>,
+      default: 0,
     },
   });
 
@@ -389,12 +401,9 @@
             name: data.data.list[i].name,
           });
         }
-      } else {
-        NotificationWarning('获取文章分类选择数据失败');
       }
     } catch (err) {
       // you can report use errorHandler or other
-      NotificationError('请求错误, 获取文章分类选择数据失败');
     }
   });
 
@@ -438,7 +447,7 @@
 
   // 附件上传
   const uploadAttachmentPathInS = new Upload();
-  const attachmentPathFile = ref();
+  const attachmentPathFile = ref([]);
   const uploadAttachmentPathName = 'attachmentPath';
   const uploadAttachmentPathFileStream = (option: RequestOption) => {
     const isUploadSuccess = ref(false);
@@ -448,8 +457,8 @@
       const file = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
       if (file && Reflect.has(file, 'url')) {
         isUploadSuccess.value = true;
-        attachmentPathFile.value = file;
-        propsForm.fields.attachment_path = file.url;
+        attachmentPathFile.value.push({ uid: file.uid, name: file.name, url: file.url });
+        propsForm.fields.attachment_path.push(file.url);
         MessageSuccess('文件上传成功');
       }
     }, 1000);
@@ -464,12 +473,72 @@
   };
   const uploadAttachmentPathChange = (_: any, currentFile: any) => {
     uploadAttachmentPathInS.uploadChange(uploadAttachmentPathName, _, currentFile);
-    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
   };
   const uploadAttachmentPathProgress = (currentFile: any) => {
     uploadAttachmentPathInS.uploadProgress(uploadAttachmentPathName, currentFile);
-    attachmentPathFile.value = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
   };
+  const uploadAttachmentPathFileRemove = (fileItem: FileItem) => {
+    const newArray : string[] = [];
+    const newLocalArray : [] = [];
+    propsForm.fields.attachment_path.forEach((url: any) => {
+      if (url !== fileItem.url) {
+        newArray.push(url);
+      }
+    });
+    propsForm.fields.attachment_path = newArray;
+
+    const cloneAttachmentPathFile = cloneDeep(attachmentPathFile.value);
+    cloneAttachmentPathFile.forEach((item: any) => {
+      if (item.url !== fileItem.url) {
+        newLocalArray.push(item);
+      }
+    });
+    attachmentPathFile.value = newLocalArray;
+  };
+
+  watch(
+    () => props.visible,
+    async (value) => {
+      if (value === true) {
+        eventFormResetFields();
+        attachmentPathFile.value = [];
+        // 请求详情接口
+        const { data } = await requestArticleInfo(props.id);
+        if (data.ok) {
+          propsForm.fields.title = data.data.title;
+          propsForm.fields.user_id = data.data.user_id.toString();
+          propsForm.fields.author = data.data.author;
+          propsForm.fields.cover = data.data.cover;
+          propsForm.fields.summary = data.data.summary;
+          propsForm.fields.status = data.data.status === 1;
+          propsForm.fields.sort = data.data.sort;
+          propsForm.fields.content = data.data.content;
+          data.data.category.forEach((item) => {
+            propsForm.fields.category.push(item.id);
+          });
+          if (data.data.commented_flag) {
+            propsForm.fields.commented_flag = true;
+          } else {
+            propsForm.fields.commented_flag = false;
+          }
+          if (data.data.recommend_flag) {
+            propsForm.fields.recommend_flag = true;
+          } else {
+            propsForm.fields.recommend_flag = false;
+          }
+          propsForm.fields.source = data.data.source;
+          propsForm.fields.source_url = data.data.source_url;
+          propsForm.fields.keyword = data.data.keyword;
+          propsForm.fields.attachment_path = data.data.attachment_path;
+
+          coverFile.value = { url: propsForm.fields.cover };
+          data.data.attachment_path.forEach((urlValue: any) => {
+            attachmentPathFile.value.push({ name: '已上传', url: urlValue });
+          });
+        }
+      }
+    }
+  );
 
   /**
    * 抽屉组件确认逻辑处理
@@ -493,7 +562,7 @@
     values: Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-empty-function
   }) => {
-    const requestFn = requestArticleAdd({
+    const requestFn = requestArticleUpdate(props.id, {
       user_id: userStore.id,
       title: propsForm.fields.title,
       author: propsForm.fields.author ? propsForm.fields.author : '',
@@ -515,15 +584,12 @@
       { errors, values }, 
       requestFn, 
       function () {
-        // 重置表单
-        eventFormResetFields();
-        coverFile.value = null;
         // 关闭抽屉
         emit('cancel');
         // 更新列表
-        emit('formCallbackSuccess');
+        emit('formCallbackSuccess', props.id);
       },
-      `文章 ${propsForm.fields.title}`
+      `文章 ${propsForm.fields.title} 更新成功`
     );
   };
 </script>

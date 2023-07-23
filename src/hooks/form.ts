@@ -56,7 +56,7 @@ export default function useFormProps(fields: FormModel) {
   text: string) => {
     const { data } = await api;
     if (data.ok) {
-      MessageSuccess(`${text} - 创建成功`);
+      MessageSuccess(text);
       callback();
     }
   };

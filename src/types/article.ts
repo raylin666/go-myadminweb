@@ -69,7 +69,7 @@ export interface ArticleCategoryListSelectResponse {
     list: ArticleCategoryListSelect[];
 }
 
-export interface ArticleAddParams {
+export interface ArticleAddOrUpdateParams {
     user_id: number;
     title: string;
     author: string;
@@ -87,7 +87,7 @@ export interface ArticleAddParams {
     category: any;
 }
 
-export interface ArticleAddResponse {
+export interface ArticleAddOrUpdateResponse {
     id: string;
 }
 

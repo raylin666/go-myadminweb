@@ -218,6 +218,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -229,6 +231,8 @@
                 <a-switch v-model="propsForm.fields.recommend_flag" type="round">
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -244,6 +248,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
+                  <template #checked-icon><icon-check/></template>
+                  <template #unchecked-icon><icon-close/></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -533,12 +539,13 @@
         // 重置表单
         eventFormResetFields();
         coverFile.value = null;
+        attachmentPathFile.value = [];
         // 关闭抽屉
         emit('cancel');
         // 更新列表
-        emit('formCallbackSuccess');
+        emit('formCallbackSuccess', 0);
       },
-      `文章 ${propsForm.fields.title}`
+      `文章 ${propsForm.fields.title} 创建成功`
     );
   };
 </script>

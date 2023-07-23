@@ -223,7 +223,7 @@
         :columns="propsTable.columns"
         :data="propsTable.list"
         :size="propsTable.tableSize"
-        :bordered="false"
+        :bordered="{ 'wrapper': true, 'headerCell': true }"
         :stripe="true"
         :row-selection="propsTable.tableRowSelection"
         :selected-keys="propsTable.tableRowSelectedKeys"
@@ -259,54 +259,52 @@
             {{ item.name }}
           </a-tag>
         </template>
-        <template #status="{ record }">
+        <template #status="{ record, rowIndex }">
           <a-switch
-            :default-checked="visibleTableAttributeStatusChecked(record.status)"
+            :v-model="propsTable.list[rowIndex].status"
+            :default-checked="visibleTableAttributeStatusChecked(record)"
             checked-color="#16c516"
             unchecked-color="red"
             type="round"
-            @change="eventTableAttributeStatusChange(record.id, record.status)"
+            @change="eventTableAttributeStatusChange(record, rowIndex)"
           >
             <template #checked>已启用</template>
             <template #unchecked>已禁用</template>
+            <template #checked-icon><icon-check/></template>
+            <template #unchecked-icon><icon-close/></template>
           </a-switch>
         </template>
-        <template #recommend_flag="{ record }">
+        <template #recommend_flag="{ record, rowIndex }">
           <a-switch
+            :v-model="propsTable.list[rowIndex].recommend_flag"
             :default-checked="
-              visibleTableAttributeRecommendChecked(record.recommend_flag)
+              visibleTableAttributeRecommendChecked(record)
             "
             checked-color="#16c516"
             unchecked-color="red"
             type="round"
-            @change="
-              eventTableAttributeRecommendChange(
-                record.id,
-                record.recommend_flag
-              )
-            "
+            @change="eventTableAttributeRecommendChange(record, rowIndex)"
           >
             <template #checked>已推荐</template>
             <template #unchecked>未推荐</template>
+            <template #checked-icon><icon-check/></template>
+            <template #unchecked-icon><icon-close/></template>
           </a-switch>
         </template>
-        <template #commented_flag="{ record }">
+        <template #commented_flag="{ record, rowIndex}">
           <a-switch
             :default-checked="
-              visibleTableAttributeCommentedChecked(record.commented_flag)
+              visibleTableAttributeCommentedChecked(record)
             "
             checked-color="#16c516"
             unchecked-color="red"
             type="round"
-            @change="
-              eventTableAttributeCommentedChange(
-                record.id,
-                record.commented_flag
-              )
-            "
+            @change="eventTableAttributeCommentedChange(record, rowIndex)"
           >
             <template #checked>已启用</template>
             <template #unchecked>已禁用</template>
+            <template #checked-icon><icon-check/></template>
+            <template #unchecked-icon><icon-close/></template>
           </a-switch>
         </template>
         <template #operations="{ record }">
@@ -340,7 +338,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, reactive } from 'vue';
   import { useI18n } from 'vue-i18n';
   import {
     requestArticleList,
@@ -404,22 +402,40 @@
    * 表格属性更新处理
    */
   // 表格状态改变事件
-  const visibleTableAttributeStatusChecked = (value: number) => visibleTableAttributeChecked(value);
-  const eventTableAttributeStatusChange = (id: string, value: number) => {
-    value = value === 1 ? 0 : 1;
-    updateTableFieldAttribute(requestArticleUpdateField(id, 'status', value.toString()), '文章状态');
+  const visibleTableAttributeStatusChecked = (record: any) => {
+    visibleTableAttributeChecked(record.status)
+    return record.status === 1;
+  };
+  const eventTableAttributeStatusChange = (record: any, rowIndex: any) => {
+    const value = record.status === 1 ? 0 : 1;
+    const callback = function () {
+      propsTable.list[rowIndex].status = value;
+    };
+    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'status', value.toString()), '文章状态', callback);
   };
   // 表格推荐改变事件
-  const visibleTableAttributeRecommendChecked = (value: number) => visibleTableAttributeChecked(value);
-  const eventTableAttributeRecommendChange = (id: string, value: number) => {
-    value = value === 1 ? 0 : 1;
-    updateTableFieldAttribute(requestArticleUpdateField(id, 'recommend_flag', value.toString()), '文章推荐');
+  const visibleTableAttributeRecommendChecked = (record: any) => {
+    visibleTableAttributeChecked(record.recommend_flag)
+    return record.recommend_flag === 1;
+  };
+  const eventTableAttributeRecommendChange = (record: any, rowIndex: any) => {
+    const value = record.recommend_flag === 1 ? 0 : 1;
+    const callback = function () {
+      propsTable.list[rowIndex].recommend_flag = value;
+    };
+    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'recommend_flag', value.toString()), '文章推荐', callback);
   };
   // 表格可评论改变事件
-  const visibleTableAttributeCommentedChecked = (value: number) => visibleTableAttributeChecked(value);
-  const eventTableAttributeCommentedChange = (id: string, value: number) => {
-    value = value === 1 ? 0 : 1;
-    updateTableFieldAttribute(requestArticleUpdateField(id, 'commented_flag', value.toString()), '文章评论');
+  const visibleTableAttributeCommentedChecked = (record: any) => {
+    visibleTableAttributeChecked(record.commented_flag)
+    return record.commented_flag === 1;
+  };
+  const eventTableAttributeCommentedChange = (record: any, rowIndex: any) => {
+    const value = record.commented_flag === 1 ? 0 : 1;
+    const callback = function () {
+      propsTable.list[rowIndex].commented_flag = value;
+    };
+    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'commented_flag', value.toString()), '文章评论', callback);
   };
 
   /**
@@ -432,7 +448,7 @@
   } = useFormProps(searchFormModel);
 
   // 新增/修改 表单提交成功后的回调处理
-  const formCallbackSuccess = () => {
+  const formCallbackSuccess = (id: string | number) => {
     getTableDataList();
   };
 

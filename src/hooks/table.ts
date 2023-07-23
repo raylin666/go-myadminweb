@@ -5,7 +5,7 @@ import { DEFAULT_PAGE_NUM, DEFAULT_PAGE_SIZE } from '@/types/constant';
 import { TableColumnData, TableData, TableRowSelection } from '@arco-design/web-vue';
 import { cloneDeep } from 'lodash';
 import { ComposerTranslation } from 'vue-i18n';
-import { MessageError, MessageSuccess, MessageWarning, NotificationError, NotificationSuccess, NotificationWarning } from '@/utils/notification';
+import { MessageSuccess, MessageWarning, NotificationSuccess } from '@/utils/notification';
 import Sortable from 'sortablejs';
 import { exchangeArray } from '@/utils/array';
 
@@ -137,7 +137,7 @@ export function useTableProps(api: ApiListFn) {
   };
 
   // 表格字段属性更新
-  const updateTableFieldAttribute = async (updateFieldApi: Promise<AxiosResponse<HttpResponse, any>>, fieldName: string) => {
+  const updateTableFieldAttribute = async (updateFieldApi: Promise<AxiosResponse<HttpResponse, any>>, fieldName: string, callback: () => void) => {
     propsTable.loading = true;
     try {
       if (fieldName === '') {
@@ -147,12 +147,10 @@ export function useTableProps(api: ApiListFn) {
       const { data } = await updateFieldApi;
       if (data.ok) {
         MessageSuccess(`${fieldName} - 更新成功`);
-      } else {
-        MessageWarning(`${fieldName} - 更新失败`);
+        callback();
       }
     } catch (err) {
       // you can report use errorHandler or other
-      MessageError(`请求错误, ${fieldName} - 更新失败`);
     } finally {
       propsTable.loading = false;
     }
@@ -172,12 +170,9 @@ export function useTableProps(api: ApiListFn) {
         getTableDataList();
 
         NotificationSuccess(`${title} 已完成删除`);
-      } else {
-        NotificationWarning(`${title} 数据删除失败`);
       }
     } catch (err) {
       // you can report use errorHandler or other
-      NotificationError(`请求错误, ${title} - 数据删除失败`);
     } finally {
       propsTable.loading = false;
     }
@@ -198,12 +193,9 @@ export function useTableProps(api: ApiListFn) {
         getTableDataList();
 
         NotificationSuccess(`已选择的 ${selectCount} 条数据已完成删除`);
-      } else {
-        NotificationWarning(`已选择的数据删除失败`);
       }
     } catch (err) {
       // you can report use errorHandler or other
-      NotificationError(`请求错误, 已选择的数据删除失败`);
     } finally {
       propsTable.loading = false;
     }

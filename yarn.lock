@@ -813,6 +813,11 @@
   "resolved" "https://registry.npmmirror.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   "version" "1.2.1"
 
+"@icon-park/vue-next@^1.4.2":
+  "integrity" "sha512-+QklF255wkfBOabY+xw6FAI0Bwln/RhdwCunNy/9sKdKuChtaU67QZqU67KGAvZUTeeBgsL+yaHHxqfQeGZXEQ=="
+  "resolved" "https://registry.npmmirror.com/@icon-park/vue-next/-/vue-next-1.4.2.tgz"
+  "version" "1.4.2"
+
 "@intlify/core-base@9.2.2":
   "integrity" "sha512-JjUpQtNfn+joMbrXvpR4hTF8iJQ2sEFzzK3KIESOx+f+uwIjgw20igOyaIdhfsVVBCds8ZM64MoeNSx+PHQMkA=="
   "resolved" "https://registry.npmmirror.com/@intlify/core-base/-/core-base-9.2.2.tgz"
@@ -8877,7 +8882,7 @@
     "semver" "^7.3.8"
     "vscode-uri" "^3.0.7"
 
-"vue@^2.6.12 || ^3.1.1", "vue@^2.6.14 || ^3.3.0", "vue@^3.0.0", "vue@^3.0.0-0 || ^2.6.0", "vue@^3.1.0", "vue@^3.2.0", "vue@^3.2.25", "vue@^3.2.40", "vue@^3.2.47", "vue@2 || 3", "vue@3.3.4":
+"vue@^2.6.12 || ^3.1.1", "vue@^2.6.14 || ^3.3.0", "vue@^3.0.0", "vue@^3.0.0-0 || ^2.6.0", "vue@^3.1.0", "vue@^3.2.0", "vue@^3.2.25", "vue@^3.2.40", "vue@^3.2.47", "vue@2 || 3", "vue@3.3.4", "vue@3.x":
   "integrity" "sha512-VTyEYn3yvIeY1Py0WaYGZsXnz3y5UnGi62GjVEqvEGPl6nxbOrCXbVOTQWBEJUqAyTUk2uJ5JLVnYJ6ZzGbrSw=="
   "resolved" "https://registry.npmmirror.com/vue/-/vue-3.3.4.tgz"
   "version" "3.3.4"

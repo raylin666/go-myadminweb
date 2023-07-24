@@ -4,7 +4,7 @@
     :visible="visible"
     unmount-on-close
     :mask-closable="false"
-    @ok="handleDrawerOk"
+    @ok="eventFormSubmitClick('form-submit')"
     @cancel="emit('cancel')"
   >
     <template #title> {{ t('article.form.basic.update.title') }} </template>
@@ -376,6 +376,7 @@
   const {
     propsForm,
     eventFormResetFields,
+    eventFormSubmitClick,
     eventFormSubmit,
     eventFormSubmitSuccess,
     eventFormSubmitFailed,
@@ -539,17 +540,6 @@
       }
     }
   );
-
-  /**
-   * 抽屉组件确认逻辑处理
-   */
-  const handleDrawerOk = () => {
-    // 触发表单提交
-    const formSubmit = document.getElementById('form-submit');
-    if (formSubmit) {
-      formSubmit.click();
-    }
-  };
 
   /**
    * 表单提交成功逻辑处理

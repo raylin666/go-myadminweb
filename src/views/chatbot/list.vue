@@ -1,20 +1,20 @@
 <template>
   <div class="container">
-    <AddArticleDrawerPage
-      :visible="propsTable.visible.AddDrawer"
-      @cancel="() => propsTable.visible.AddDrawer = false"
+    <AddChatbotModelPage
+      :visible="propsTable.visible.add"
+      @cancel="() => propsTable.visible.add = false"
       @form-callback-success="formCallbackSuccess"
     />
     <UpdateArticleDrawerPage
-      :visible="propsTable.visible.UpdateDrawer"
+      :visible="propsTable.visible.update"
       :id="id"
-      @cancel="() => propsTable.visible.UpdateDrawer = false"
+      @cancel="() => propsTable.visible.update = false"
       @form-callback-success="formCallbackSuccess"
     />
     <InfoArticleDrawerPage
-      :visible="propsTable.visible.InfoDrawer"
+      :visible="propsTable.visible.info"
       :id="id"
-      @cancel="() => propsTable.visible.InfoDrawer = false"
+      @cancel="() => propsTable.visible.info = false"
     />
 
     <Breadcrumb :items="['menu.ai', 'menu.chatbot.list']" />
@@ -98,7 +98,7 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="() => propsTable.visible.AddDrawer = true">
+            <a-button type="primary" @click="() => propsTable.visible.add = true">
               <template #icon>
                 <icon-plus />
               </template>
@@ -184,6 +184,19 @@
           <br />
           <span style="color: orchid">{{ record.updated_at }}</span>
         </template>
+        <template #pid="{ record }">
+          <span v-if="record.pid === 0">
+            <a-tag color="cyan">无</a-tag>
+          </span>
+          <span v-else>
+            <a-tag color="magenta">{{ record.pid }}</a-tag>
+          </span>
+        </template>
+        <template #icon="{ record }">
+          <span v-if="record.icon">
+            <IconPark :type="record.icon" theme="outline" size="24" fill="#333" />
+          </span>
+        </template>
         <template #status="{ record, rowIndex }">
           <a-switch
             :v-model="propsTable.list[rowIndex].status"
@@ -200,19 +213,24 @@
           </a-switch>
         </template>
         <template #operations="{ record }">
-          <a-button v-permission="['admin']" type="primary" size="mini" @click="infoAction(record.id)">
-            {{ $t('chatbot.columns.operations.info') }}
-          </a-button>
+          <span v-if="record.question">
+            <a-tooltip background-color="#ff7da3" :content="record.question" position="left">
+              <a-button v-permission="['admin']" size="mini" type="primary" status="success">{{ $t('chatbot.columns.operations.question') }}</a-button>
+            </a-tooltip>
+          </span>
+          <span v-else>
+            <a-button disabled v-permission="['admin']" size="mini" type="primary" status="success">{{ $t('chatbot.columns.operations.notQuestion') }}</a-button>
+          </span>
           &nbsp;
           <a-button v-permission="['admin']" status="warning" size="mini" @click="updateAction(record.id)">
             {{ $t('chatbot.columns.operations.edit') }}
           </a-button>
           &nbsp;
           <a-popconfirm
-            :content="eventTableDeletePopConfirm(`[${record.title}] 场景分类`)"
+            :content="eventTableDeletePopConfirm(`[${record.name}] 场景分类`)"
             type="warning"
             position="left"
-            @ok="deleteTableDataLine(requestChatbotDelete(record.id), record.title)"
+            @ok="deleteTableDataLine(requestChatbotDelete(record.id), record.name)"
           >
             <a-button
               v-permission="['admin']"
@@ -230,7 +248,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, watch } from 'vue';
+  import { ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import {
     requestChatbotList,
@@ -238,7 +256,7 @@
     requestChatbotDelete,
   } from '@/api/chatbot';
   import { TRequestParams } from '@/types/global';
-  import AddArticleDrawerPage from './components/add.vue';
+  import AddChatbotModelPage from './components/add.vue';
   import UpdateArticleDrawerPage from './components/update.vue';
   import InfoArticleDrawerPage from './components/info.vue';
   import { ChatbotListParams } from '@/types/chatbot';
@@ -246,6 +264,9 @@
   import { useTableProps, getDensityListOptions } from '@/hooks/table';
   import { ListColumns, getStatusOptions } from './data/table';
   import { searchFormModel } from './data/form'
+  // 图标官网: http://iconpark.oceanengine.com/official
+  import { IconPark } from '@icon-park/vue-next/es/all'
+import { TableColumnData, TableData } from '@arco-design/web-vue';
 
   /**
    * 国际语言
@@ -308,7 +329,7 @@
     const callback = function () {
       propsTable.list[rowIndex].status = value;
     };
-    updateTableFieldAttribute(requestChatbotUpdateField(record.id, 'status', value.toString()), '分类状态', callback);
+    updateTableFieldAttribute(requestChatbotUpdateField(record.id, 'status', value.toString()), '场景分类状态', callback);
   };
 
   /**
@@ -327,13 +348,13 @@
 
   // 当前点击获取的业务ID
   const id = ref(0);
-  const infoAction = (articleId: number) => {
-    propsTable.visible.InfoDrawer = true;
-    id.value = articleId;
+  const infoAction = (businessId: number) => {
+    propsTable.visible.info = true;
+    id.value = businessId;
   };
-  const updateAction = (articleId: number) => {
-    propsTable.visible.UpdateDrawer = true;
-    id.value = articleId;
+  const updateAction = (businessId: number) => {
+    propsTable.visible.update = true;
+    id.value = businessId;
   };
 </script>
 

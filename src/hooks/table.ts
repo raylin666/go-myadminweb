@@ -68,11 +68,11 @@ export function useTableProps(api: ApiListFn) {
       // 表格多行选择删除开关, 控制 Model 确认弹窗
       rowSelectDelete: <boolean>false,
       // 新增数据开关
-      AddDrawer: <boolean>false,
+      add: <boolean>false,
       // 更新数据开关
-      UpdateDrawer: <boolean>false,
+      update: <boolean>false,
       // 详情数据开关
-      InfoDrawer: <boolean>false,
+      info: <boolean>false,
     },
     // 分页
     pagination: <Pagination>{

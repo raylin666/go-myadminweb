@@ -34,40 +34,41 @@ export const ListColumns = (t: ComposerTranslation) : TableColumnData[] => [
     {
         title: t('chatbot.columns.pid'),
         dataIndex: 'pid',
+        slotName: 'pid',
         width: 100,
     },
     {
         title: t('chatbot.columns.icon'),
         dataIndex: 'icon',
         slotName: 'icon',
-        width: 100,
+        width: 80,
     },
     {
         title: t('chatbot.columns.describe'),
         dataIndex: 'describe',
     },
     {
-        title: t('articleList.columns.status'),
+        title: t('chatbot.columns.status'),
         dataIndex: 'status',
         slotName: 'status',
         width: 100,
     },
     {
-        title: t('articleList.columns.timeAt'),
+        title: t('chatbot.columns.timeAt'),
         dataIndex: 'time_at',
         slotName: 'time_at',
         width: 200,
     },
     {
-        title: t('articleList.columns.sort'),
+        title: t('chatbot.columns.sort'),
         dataIndex: 'sort',
         width: 80,
     },
     {
-        title: t('articleList.columns.operations'),
+        title: t('chatbot.columns.operations'),
         dataIndex: 'operations',
         slotName: 'operations',
         fixed: 'right',
-        width: 200,
+        width: 230,
     },
 ];

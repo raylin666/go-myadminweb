@@ -1,20 +1,20 @@
 <template>
   <div class="container">
     <AddArticleDrawerPage
-      :visible="propsTable.visible.AddDrawer"
-      @cancel="() => propsTable.visible.AddDrawer = false"
+      :visible="propsTable.visible.add"
+      @cancel="() => propsTable.visible.add = false"
       @form-callback-success="formCallbackSuccess"
     />
     <UpdateArticleDrawerPage
-      :visible="propsTable.visible.UpdateDrawer"
+      :visible="propsTable.visible.update"
       :id="id"
-      @cancel="() => propsTable.visible.UpdateDrawer = false"
+      @cancel="() => propsTable.visible.update = false"
       @form-callback-success="formCallbackSuccess"
     />
     <InfoArticleDrawerPage
-      :visible="propsTable.visible.InfoDrawer"
+      :visible="propsTable.visible.info"
       :id="id"
-      @cancel="() => propsTable.visible.InfoDrawer = false"
+      @cancel="() => propsTable.visible.info = false"
     />
 
     <Breadcrumb :items="['menu.article', 'menu.article.list']" />
@@ -121,7 +121,7 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="() => propsTable.visible.AddDrawer = true">
+            <a-button type="primary" @click="() => propsTable.visible.add = true">
               <template #icon>
                 <icon-plus />
               </template>
@@ -454,13 +454,13 @@
 
   // 当前点击获取的业务ID
   const id = ref(0);
-  const infoAction = (articleId: number) => {
-    propsTable.visible.InfoDrawer = true;
-    id.value = articleId;
+  const infoAction = (businessId: number) => {
+    propsTable.visible.info = true;
+    id.value = businessId;
   };
-  const updateAction = (articleId: number) => {
-    propsTable.visible.UpdateDrawer = true;
-    id.value = articleId;
+  const updateAction = (businessId: number) => {
+    propsTable.visible.update = true;
+    id.value = businessId;
   };
 </script>
 

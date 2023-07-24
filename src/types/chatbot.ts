@@ -27,3 +27,34 @@ export interface ChatbotListResponse extends TResponse {
     prev_page_url: string | null;
     next_page_url: string | null;
 }
+
+export interface ChatbotListSelect {
+    id: string;
+    pid: string;
+    name: string;
+    icon: string;
+    describe: string;
+    question: string;
+    sort: number;
+    status: number;
+    created_at: number;
+    updated_at: number;
+}
+
+export interface ChatbotListSelectResponse {
+    list: ChatbotListSelect[];
+}
+
+export interface ChatbotAddOrUpdateParams {
+    name: string;
+    pid: number;
+    icon: string;
+    describe: string;
+    question: string;
+    sort: number;
+    status: number;
+}
+
+export interface ChatbotAddOrUpdateResponse {
+    id: string;
+}

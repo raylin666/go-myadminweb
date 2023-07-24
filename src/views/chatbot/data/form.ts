@@ -3,14 +3,14 @@ import { FormModel as Model } from "@/types/global";
 export interface SearchFormModelInterface extends Model {
   number: string | undefined;
   name: string;
-  pid: Array<number>;
+  pid: number | undefined;
   status: string | number | undefined;
 }
 
 export const searchFormModel : SearchFormModelInterface = {
   number: '',
   name: '',
-  pid: [],
+  pid: undefined,
   status: undefined,
 };
 

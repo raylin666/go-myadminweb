@@ -1,7 +1,7 @@
 import { TRequestParams, TResponse } from "./global";
 
 export interface ChatbotList {
-    id: number;
+    id: string | number;
     name: string;
     parent: object;
     icon: string;
@@ -29,7 +29,7 @@ export interface ChatbotListResponse extends TResponse {
 }
 
 export interface ChatbotListSelect {
-    id: string;
+    id: number | string;
     pid: string;
     name: string;
     icon: string;
@@ -45,6 +45,19 @@ export interface ChatbotListSelectResponse {
     list: ChatbotListSelect[];
 }
 
+export interface ChatbotInfoResponse {
+    id: number | string;
+    name: string;
+    pid: number;
+    icon: string;
+    describe: string;
+    question: string;
+    sort: number;
+    status: number;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface ChatbotAddOrUpdateParams {
     name: string;
     pid: number;
@@ -56,5 +69,5 @@ export interface ChatbotAddOrUpdateParams {
 }
 
 export interface ChatbotAddOrUpdateResponse {
-    id: string;
+    id: string | number;
 }

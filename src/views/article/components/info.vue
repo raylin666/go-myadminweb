@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    width="86%"
+    width="100%"
     :visible="visible"
     :id="id"
     unmount-on-close

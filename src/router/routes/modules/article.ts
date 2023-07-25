@@ -22,6 +22,16 @@ const ARTICLE: AppRouteRecordRaw = {
         roles: ['*'],
       },
     },
+    {
+      path: 'category/list',
+      name: 'ArticleCategoryList',
+      component: () => import('@/views/article/categoryList.vue'),
+      meta: {
+        locale: 'menu.article.category.list',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
   ],
 };
 

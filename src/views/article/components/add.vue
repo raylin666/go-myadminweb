@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    width="86%"
+    width="100%"
     :visible="visible"
     unmount-on-close
     :mask-closable="false"
@@ -183,7 +183,7 @@
               >
                 <a-input-number
                   v-model="propsForm.fields.sort"
-                  placeholder="请输入数字(正整数)"
+                  :placeholder="$t('article.form.basic.sort.placeholder')"
                   :min="0"
                   :max="65535"
                 />

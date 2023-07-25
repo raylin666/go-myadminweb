@@ -39,6 +39,7 @@
             type="outline"
             :shape="'circle'"
             @click="setDropDownVisible"
+            style="display: block;"
           >
             <template #icon>
               <icon-language />

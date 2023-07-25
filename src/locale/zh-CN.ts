@@ -55,6 +55,7 @@ export default {
   'menu.server.monitor': '实时监控-服务端',
   'menu.article': '文章管理',
   'menu.article.list': '文章列表',
+  'menu.article.category.list': '分类列表',
   'menu.ai': 'AI 场景管理',
   'menu.chatbot.list': '场景分类列表',
   'menu.list': '列表页',

@@ -54,6 +54,7 @@ export default {
   'article.form.basic.category.placeholder': '请选择文章分类',
   'article.form.basic.category.validate.message': '请选择文章分类',
   'article.form.basic.sort': '文章排序',
+  'article.form.basic.sort.placeholder': '请输入数字(正整数)',
   'article.form.basic.sort.validate.message':
     '请输入文章排序, 不能为空, 必须为正整数',
   'article.form.basic.keyword': '文章关键词',

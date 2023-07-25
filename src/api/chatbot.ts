@@ -1,7 +1,14 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { HttpResponse, TRequestParams } from '@/types/global';
-import { ChatbotAddOrUpdateParams, ChatbotAddOrUpdateResponse, ChatbotListParams, ChatbotListResponse, ChatbotListSelectResponse } from '@/types/chatbot';
+import { 
+  ChatbotAddOrUpdateParams, 
+  ChatbotAddOrUpdateResponse, 
+  ChatbotListParams, 
+  ChatbotListResponse, 
+  ChatbotListSelectResponse,
+  ChatbotInfoResponse,
+} from '@/types/chatbot';
 
 /**
  * 场景分类列表
@@ -26,12 +33,30 @@ export function requestChatbotListSelect() {
 }
 
 /**
+ * 场景分类详情
+ * @param id
+ */
+export function requestChatbotInfo(id: string | number) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.get<HttpResponse<ChatbotInfoResponse>>(`/chatbot/info/${id}`);
+}
+
+/**
  * 新增场景分类
  * @param params
  */
 export function requestChatbotAdd(params: ChatbotAddOrUpdateParams) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
   return axios.post<HttpResponse<ChatbotAddOrUpdateResponse>>(`/chatbot/add`, params);
+}
+
+/**
+ * 更新场景分类
+ * @param params
+ */
+export function requestChatbotUpdate(id: string | number, params: ChatbotAddOrUpdateParams) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.put<HttpResponse<ChatbotAddOrUpdateResponse>>(`/chatbot/update/${id}`, params);
 }
 
 /**

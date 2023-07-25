@@ -1,7 +1,7 @@
 import { TRequestParams, TResponse } from "./global";
 
 export interface ArticleList {
-    id: number;
+    id: number | string;
     title: string;
     author: string;
     cover: string;
@@ -40,7 +40,7 @@ export interface ArticleListResponse extends TResponse {
 }
 
 export interface ArticleCategoryList {
-    id: string;
+    id: number | string;
     pid: string;
     name: string;
     sort: number;
@@ -56,7 +56,7 @@ export interface ArticleCategoryListResponse {
 }
 
 export interface ArticleCategoryListSelect {
-    id: string;
+    id: string | number;
     pid: string;
     name: string;
     sort: number;
@@ -88,11 +88,11 @@ export interface ArticleAddOrUpdateParams {
 }
 
 export interface ArticleAddOrUpdateResponse {
-    id: string;
+    id: number | string;
 }
 
 export interface ArticleInfoResponse {
-    id: number;
+    id: number | string;
     title: string;
     author: string;
     cover: string;

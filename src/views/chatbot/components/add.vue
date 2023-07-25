@@ -140,7 +140,7 @@
               >
                 <a-input-number
                   v-model="propsForm.fields.sort"
-                  placeholder="请输入数字(正整数)"
+                  :placeholder="$t('chatbot.form.basic.sort.placeholder')"
                   :min="0"
                   :max="65535"
                 />

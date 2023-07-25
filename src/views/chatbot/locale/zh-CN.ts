@@ -35,7 +35,7 @@ export default {
   'chatbot.form.basic.pid': '父级场景分类',
   'chatbot.form.basic.pid.placeholder': '请选择父级场景分类',
   'chatbot.form.basic.pid.validate.message': '请选择父级场景分类',
-  'chatbot.form.basic.icon': '场景分类图标 [图标值请参考: http://iconpark.oceanengine.com/official , 其他渠道ICON暂不支持]',
+  'chatbot.form.basic.icon': '场景分类图标 值例如: black-eight [图标值请参考: http://iconpark.oceanengine.com/official , 其他渠道ICON暂不支持]',
   'chatbot.form.basic.status': '状态',
   'chatbot.form.basic.icon.placeholder': '请填写场景分类图标',
   'chatbot.form.basic.icon.validate.message': '场景分类图标不能为空',
@@ -45,6 +45,7 @@ export default {
   'chatbot.form.basic.question': '提问格式 [二级类目才有, 替换格式类似为 %s% 用来在传递提问时的占位值]',
   'chatbot.form.basic.question.placeholder': '请填写提问格式',
   'chatbot.form.basic.sort': '场景分类排序',
+  'chatbot.form.basic.sort.placeholder': '请输入数字(正整数)',
   'chatbot.form.basic.sort.validate.message':
     '请输入场景分类排序, 不能为空, 必须为正整数',
 };

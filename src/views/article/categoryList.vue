@@ -1,19 +1,19 @@
 <template>
   <div class="container">
-    <AddChatbotModelPage
+    <AddArticleCategoryModelPage
       :visible="propsTable.visible.add"
       @cancel="() => propsTable.visible.add = false"
       @form-callback-success="formCallbackSuccess"
     />
-    <UpdateArticleDrawerPage
+    <UpdateArticleCategoryModelPage
       :visible="propsTable.visible.update"
       :id="id"
       @cancel="() => propsTable.visible.update = false"
       @form-callback-success="formCallbackSuccess"
     />
 
-    <Breadcrumb :items="['menu.ai', 'menu.chatbot.list']" />
-    <a-card class="general-card" :title="$t('menu.chatbot.list')">
+    <Breadcrumb :items="['menu.ai', 'menu.article.category.list']" />
+    <a-card class="general-card" :title="$t('menu.article.category.list')">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -26,29 +26,29 @@
               <a-col :span="12">
                 <a-form-item
                   field="number"
-                  :label="$t('chatbot.form.number')"
+                  :label="$t('article.category.form.number')"
                 >
                   <a-input
                     v-model="propsForm.fields.number"
-                    :placeholder="$t('chatbot.form.number.placeholder')"
+                    :placeholder="$t('article.category.form.number.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="12">
                 <a-form-item
                   field="name"
-                  :label="$t('chatbot.form.name')"
+                  :label="$t('article.category.form.name')"
                 >
                   <a-input
                     v-model="propsForm.fields.name"
-                    :placeholder="$t('chatbot.form.name.placeholder')"
+                    :placeholder="$t('article.category.form.name.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="12">
                 <a-form-item
                   field="pid"
-                  :label="$t('chatbot.form.pid')"
+                  :label="$t('article.category.form.pid')"
                 >
                   <a-select
                     v-model="propsForm.fields.pid"
@@ -59,7 +59,7 @@
               <a-col :span="12">
                 <a-form-item
                   field="status"
-                  :label="$t('chatbot.form.status')"
+                  :label="$t('article.category.form.status')"
                 >
                   <a-select
                     v-model="propsForm.fields.status"
@@ -97,7 +97,7 @@
               <template #icon>
                 <icon-plus />
               </template>
-              {{ $t('chatbot.create') }}
+              {{ $t('article.category.create') }}
             </a-button>
           </a-space>
         </a-col>
@@ -170,10 +170,17 @@
         :stripe="true"
         v-model:expandedKeys="expandedKeys"
         :hide-expand-button-on-empty="false"
-        :scroll="{ x: 2000 }"
         @page-change="eventTablePageChange"
         @select="eventTableRowSelected"
       >
+        <template #article_count="{ record }">
+          <span v-if="record.article_count <= 0">
+            <a-tag color="red">暂无文章</a-tag>
+          </span>
+          <span v-else>
+            <a-tag color="pinkpurple">+ {{ record.article_count }} 篇文章</a-tag>
+          </span>
+        </template>
         <template #time_at="{ record }">
           <span style="color: #0960bd">{{ record.created_at }}</span>
           <br />
@@ -187,9 +194,19 @@
             <a-tag color="magenta">{{ record.pid }}</a-tag>
           </span>
         </template>
-        <template #icon="{ record }">
-          <span v-if="record.icon">
-            <IconPark :type="record.icon" theme="outline" size="24" fill="#333" />
+        <template #cover="{ record }">
+          <span v-if="record.cover">
+            <a-avatar :size="54" shape="square">
+              <img :alt="record.cover" :src="record.cover" />
+            </a-avatar>
+          </span>
+        </template>
+        <template #color="{ record }">
+          <span v-if="record.color">
+            <a-tag :color="record.color">{{ record.color }}</a-tag>
+          </span>
+          <span v-else>
+            <a-tag color="purple">无</a-tag>
           </span>
         </template>
         <template #status="{ record, rowIndex }">
@@ -208,24 +225,15 @@
           </a-switch>
         </template>
         <template #operations="{ record }">
-          <span v-if="record.question">
-            <a-tooltip background-color="rgb(var(--primary-5))" :content="record.question" position="left">
-              <a-button v-permission="['admin']" size="mini" type="primary" status="success">{{ $t('chatbot.columns.operations.question') }}</a-button>
-            </a-tooltip>
-          </span>
-          <span v-else>
-            <a-button disabled v-permission="['admin']" size="mini" type="primary" status="success">{{ $t('chatbot.columns.operations.notQuestion') }}</a-button>
-          </span>
-          &nbsp;
           <a-button v-permission="['admin']" status="warning" size="mini" @click="updateAction(record.id)">
-            {{ $t('chatbot.columns.operations.edit') }}
+            {{ $t('article.category.columns.operations.edit') }}
           </a-button>
           &nbsp;
           <a-popconfirm
-            :content="eventTableDeletePopConfirm(`[${record.name}] 场景分类`)"
+            :content="eventTableDeletePopConfirm(`[${record.name}] 文章分类`)"
             type="warning"
             position="left"
-            @ok="deleteTableDataLine(requestChatbotDelete(record.id), record.name)"
+            @ok="deleteTableDataLine(requestArticleCategoryDelete(record.id), record.name)"
           >
             <a-button
               v-permission="['admin']"
@@ -233,7 +241,7 @@
               status="danger"
               size="mini"
             >
-              {{ $t('chatbot.columns.operations.delete') }}
+              {{ $t('article.category.columns.operations.delete') }}
             </a-button>
           </a-popconfirm>
         </template>
@@ -246,20 +254,18 @@
   import { ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import {
-    requestChatbotList,
-    requestChatbotUpdateField,
-    requestChatbotDelete,
-  } from '@/api/chatbot';
+    requestArticleCategoryList,
+    requestArticleCategoryUpdateField,
+    requestArticleCategoryDelete,
+  } from '@/api/article';
   import { TRequestParams } from '@/types/global';
-  import AddChatbotModelPage from './components/add.vue';
-  import UpdateArticleDrawerPage from './components/update.vue';
-  import { ChatbotListParams } from '@/types/chatbot';
+  import AddArticleCategoryModelPage from './components/categoryAdd.vue';
+  import UpdateArticleCategoryModelPage from './components/categoryUpdate.vue';
+  import { ArticleCategoryParams } from '@/types/article';
   import useFormProps from '@/hooks/form';
   import { useTableProps, getDensityListOptions } from '@/hooks/table';
-  import { ListColumns, getStatusOptions } from './data/table';
-  import { searchFormModel } from './data/form'
-  // 图标官网: http://iconpark.oceanengine.com/official
-  import { IconPark } from '@icon-park/vue-next/es/all'
+  import { ListColumns, getStatusOptions } from './data/categoryTable';
+  import { searchFormModel } from './data/categoryForm'
 
   /**
    * 国际语言
@@ -270,8 +276,8 @@
    * 表格组件
    */
   // 列表接口请求函数
-  const apiDataListFn = (params: ChatbotListParams | TRequestParams) => {
-    return requestChatbotList(params);
+  const apiDataListFn = (params: ArticleCategoryParams | TRequestParams) => {
+    return requestArticleCategoryList(params);
   };
 
   const { 
@@ -322,7 +328,7 @@
     const callback = function () {
       propsTable.list[rowIndex].status = value;
     };
-    updateTableFieldAttribute(requestChatbotUpdateField(record.id, 'status', value.toString()), '场景分类状态', callback);
+    updateTableFieldAttribute(requestArticleCategoryUpdateField(record.id, 'status', value.toString()), '文章分类状态', callback);
   };
 
   /**

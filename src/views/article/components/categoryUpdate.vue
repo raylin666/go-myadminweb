@@ -65,21 +65,21 @@
           <a-row :gutter="24">
             <a-col :span="24">
               <a-form-item
-                field="icon"
-                :label="$t('article.category.form.basic.icon')"
+                field="color"
+                :label="$t('article.category.form.basic.color')"
                 :rules="[
                   {
                     required: true,
-                    message: $t('article.category.form.basic.icon.validate.message'),
+                    message: $t('article.category.form.basic.color.validate.message'),
                   },
                 ]"
                 :validate-trigger="['change', 'input']"
               >
               <!-- 后续做成筛选查找 -->
                 <a-input
-                  v-model="propsForm.fields.icon"
+                  v-model="propsForm.fields.color"
                   allow-clear
-                  :placeholder="$t('article.category.form.basic.icon.placeholder')"
+                  :placeholder="$t('article.category.form.basic.color.placeholder')"
                 />
               </a-form-item>
             </a-col>
@@ -87,41 +87,66 @@
           <a-row :gutter="24">
             <a-col :span="24">
               <a-form-item
-                field="describe"
-                :label="$t('article.category.form.basic.describe')"
+                field="cover"
+                :label="$t('article.category.form.basic.cover')"
                 :rules="[
                   {
                     required: true,
-                    message: $t('chatbot.form.basic.describe.validate.message'),
+                    message: $t('article.category.form.basic.cover.validate.message'),
                   },
                 ]"
-                :validate-trigger="['change', 'input']"
+                :validate-trigger="['change']"
               >
-                <a-textarea
-                  v-model="propsForm.fields.describe"
-                  :placeholder="$t('chatbot.form.basic.describe.placeholder')"
-                  :max-length="{ length: 250, errorOnly: true }"
-                  allow-clear
-                  show-word-limit
-                  style="height: 92px;"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="24">
-            <a-col :span="24">
-              <a-form-item
-                field="question"
-                :label="$t('chatbot.form.basic.question')"
-              >
-                <a-textarea
-                  v-model="propsForm.fields.question"
-                  :placeholder="$t('chatbot.form.basic.question.placeholder')"
-                  :max-length="{ length: 250, errorOnly: true }"
-                  allow-clear
-                  show-word-limit
-                  style="height: 92px;"
-                />
+                <a-upload
+                  v-model="propsForm.fields.cover"
+                  :file-list="coverFile ? [coverFile] : []"
+                  :show-file-list="false"
+                  :custom-request="uploadCoverFileStream"
+                  @change="uploadCoverChange"
+                  @progress="uploadCoverProgress"
+                >
+                  <template #upload-button>
+                    <div
+                      :class="`arco-upload-list-item${
+                        coverFile && coverFile.status === 'error'
+                          ? ' arco-upload-list-item-error'
+                          : ''
+                      }`"
+                    >
+                      <div
+                        v-if="coverFile && coverFile.url"
+                        class="arco-upload-list-picture custom-upload-avatar"
+                      >
+                        <img :src="coverFile.url" :alt="coverFile.url" />
+                        <div class="arco-upload-list-picture-mask">
+                          <IconEdit />
+                        </div>
+                        <a-progress
+                          v-if="
+                            coverFile.status === 'uploading' && coverFile.percent < 100
+                          "
+                          :percent="coverFile.percent"
+                          type="circle"
+                          size="mini"
+                          :style="{
+                            position: 'absolute',
+                            left: '50%',
+                            top: '50%',
+                            transform: 'translateX(-50%) translateY(-50%)',
+                          }"
+                        />
+                      </div>
+                      <div v-else class="arco-upload-picture-card">
+                        <div class="arco-upload-picture-card-text">
+                          <IconPlus />
+                          <div style="margin-top: 10px; font-weight: 300"
+                            >点击上传</div
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </a-upload>
               </a-form-item>
             </a-col>
           </a-row>
@@ -129,18 +154,18 @@
             <a-col :span="12">
               <a-form-item
                 field="sort"
-                :label="$t('chatbot.form.basic.sort')"
+                :label="$t('article.category.form.basic.sort')"
                 :rules="[
                   {
                     required: true,
-                    message: $t('chatbot.form.basic.sort.validate.message'),
+                    message: $t('article.category.form.basic.sort.validate.message'),
                   },
                 ]"
                 :validate-trigger="['change', 'input']"
               >
                 <a-input-number
                   v-model="propsForm.fields.sort"
-                  :placeholder="$t('chatbot.form.basic.sort.placeholder')"
+                  :placeholder="$t('article.category.form.basic.sort.placeholder')"
                   :min="0"
                   :max="65535"
                 />
@@ -150,7 +175,7 @@
             <a-col :span="4">
               <a-form-item
                 field="status"
-                :label="$t('chatbot.form.basic.status')"
+                :label="$t('article.category.form.basic.status')"
               >
                 <a-switch
                   v-model="propsForm.fields.status"
@@ -177,12 +202,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { PropType, reactive, onMounted, watch } from 'vue';
+  import { ref, PropType, reactive, onMounted, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
-  import { requestChatbotListSelect, requestChatbotInfo, requestChatbotUpdate } from '@/api/chatbot';
+  import { requestArticleCategoryListSelect, requestArticleCategoryInfo, requestArticleCategoryUpdate } from '@/api/article';
   import useFormProps from '@/hooks/form';
   import { FormModel } from '../data/form';
+  import Upload from '@/class/upload';
+  import { RequestOption } from '@arco-design/web-vue';
+  import { MessageSuccess } from '@/utils/notification';
 
   /**
    * 定义调用该组件的父级组件中的传递属性
@@ -228,14 +256,15 @@
   const categoryOptions: any[] = reactive([{id: 0, name: '顶级分类'}]);
   onMounted(async () => {
     try {
-      const { data } = await requestChatbotListSelect();
+      const { data } = await requestArticleCategoryListSelect();
       if (data.ok) {
         // eslint-disable-next-line no-plusplus
         for (let i = 0; i < data.data.list.length; i++) {
-          categoryOptions.push({
-            id: data.data.list[i].id,
-            name: data.data.list[i].name,
-          });
+          // 暂不支持子分类
+          // categoryOptions.push({
+          //   id: data.data.list[i].id,
+          //   name: data.data.list[i].name,
+          // });
         }
       }
     } catch (err) {
@@ -243,24 +272,63 @@
     }
   });
 
+  /**
+   * 图片上传组件
+   */
+  // 封面上传
+  const uploadCoverInS = new Upload();
+  const coverFile = ref();
+  const uploadCoverName = 'cover';
+  const uploadCoverFileStream = (option: RequestOption) => {
+    const isUploadSuccess = ref(false);
+    uploadCoverInS.uploadFileStream(uploadCoverName, option);
+    // 定时器
+    const timer = setInterval(function () {
+      const file = uploadCoverInS.getFile(uploadCoverName);
+      if (file && Reflect.has(file, 'url')) {
+        isUploadSuccess.value = true;
+        coverFile.value = file;
+        propsForm.fields.cover = file.url;
+        MessageSuccess('文件上传成功');
+      }
+    }, 1000);
+    watch(
+      () => isUploadSuccess.value,
+      (value) => {
+        if (value === true) {
+          clearInterval(timer);
+        }
+      }
+    );
+  };
+  const uploadCoverChange = (_: any, currentFile: any) => {
+    uploadCoverInS.uploadChange(uploadCoverName, _, currentFile);
+    coverFile.value = uploadCoverInS.getFile(uploadCoverName);
+  };
+  const uploadCoverProgress = (currentFile: any) => {
+    uploadCoverInS.uploadProgress(uploadCoverName, currentFile);
+    coverFile.value = uploadCoverInS.getFile(uploadCoverName);
+  };
+
   watch(
     () => props.visible,
     async (value) => {
       if (value === true) {
         eventFormResetFields();
         // 请求详情接口
-        const { data } = await requestChatbotInfo(props.id);
+        const { data } = await requestArticleCategoryInfo(props.id);
         if (data.ok) {
           propsForm.fields.name = data.data.name;
-          propsForm.fields.icon = data.data.icon;
-          propsForm.fields.describe = data.data.describe;
-          propsForm.fields.question = data.data.question;
+          propsForm.fields.cover = data.data.cover;
+          propsForm.fields.color = data.data.color;
           propsForm.fields.status = data.data.status === 1;
           propsForm.fields.sort = data.data.sort;
           propsForm.fields.pid = 0;
           if (data.data.pid) {
             propsForm.fields.pid = data.data.pid;
           }
+
+          coverFile.value = { url: propsForm.fields.cover };
         }
       }
     }
@@ -277,12 +345,11 @@
     values: Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-empty-function
   }) => {
-    const requestFn = requestChatbotUpdate(props.id, {
+    const requestFn = requestArticleCategoryUpdate(props.id,{
       name: propsForm.fields.name,
       pid: propsForm.fields.pid,
-      icon: propsForm.fields.icon,
-      describe: propsForm.fields.describe,
-      question: propsForm.fields.question,
+      cover: propsForm.fields.cover,
+      color: propsForm.fields.color,
       sort: propsForm.fields.sort,
       status: propsForm.fields.status ? 1 : 0,
     });
@@ -298,7 +365,7 @@
         // 更新列表
         emit('formCallbackSuccess', props.id);
       },
-      `场景分类 ${propsForm.fields.name} 更新成功`
+      `文章分类 ${propsForm.fields.name} 更新成功`
     );
   };
 </script>

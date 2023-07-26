@@ -39,36 +39,6 @@ export interface ArticleListResponse extends TResponse {
     next_page_url: string | null;
 }
 
-export interface ArticleCategoryList {
-    id: number | string;
-    pid: string;
-    name: string;
-    sort: number;
-    status: number;
-    created_at: number;
-    updated_at: number;
-    article_count: number;
-}
-
-export interface ArticleCategoryListResponse {
-    list: ArticleCategoryList[];
-    count: number;
-}
-
-export interface ArticleCategoryListSelect {
-    id: string | number;
-    pid: string;
-    name: string;
-    sort: number;
-    status: number;
-    created_at: number;
-    updated_at: number;
-}
-
-export interface ArticleCategoryListSelectResponse {
-    list: ArticleCategoryListSelect[];
-}
-
 export interface ArticleAddOrUpdateParams {
     user_id: number;
     title: string;
@@ -116,4 +86,63 @@ export interface ArticleInfoResponse {
     keyword: Array<string | number>;
     attachment_path: Array<string>;
     category: Array<any>;
+}
+
+export interface ArticleCategoryList {
+    id: number | string;
+    pid: string;
+    name: string;
+    sort: number;
+    status: number;
+    created_at: number;
+    updated_at: number;
+    article_count: number;
+}
+
+export interface ArticleCategoryParams extends TRequestParams {
+    page: number;
+    size: number;
+}
+
+export interface ArticleCategoryListResponse extends TResponse {
+    list: ArticleCategoryList[];
+}
+
+export interface ArticleCategoryListSelect {
+    id: string | number;
+    pid: string;
+    name: string;
+    sort: number;
+    status: number;
+    created_at: number;
+    updated_at: number;
+}
+
+export interface ArticleCategoryListSelectResponse {
+    list: ArticleCategoryListSelect[];
+}
+
+export interface ArticleCategoryInfoResponse {
+    id: number | string;
+    name: string;
+    pid: number;
+    color: string;
+    cover: string;
+    sort: number;
+    status: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ArticleCategoryAddOrUpdateParams {
+    name: string;
+    pid: number;
+    cover: string;
+    color: string;
+    sort: number;
+    status: number;
+}
+
+export interface ArticleCategoryAddOrUpdateResponse {
+    id: string | number;
 }

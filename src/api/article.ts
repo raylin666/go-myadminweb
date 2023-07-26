@@ -8,6 +8,10 @@ import {
   ArticleAddOrUpdateParams,
   ArticleAddOrUpdateResponse,
   ArticleInfoResponse,
+  ArticleCategoryParams,
+  ArticleCategoryAddOrUpdateParams,
+  ArticleCategoryAddOrUpdateResponse,
+  ArticleCategoryInfoResponse,
 } from '@/types/article';
 import { HttpResponse, TRequestParams } from '@/types/global';
 
@@ -88,9 +92,14 @@ export function requestArticleBatchDelete(ids: number[]) {
 /**
  * 文章分类列表
  */
-export function requestArticleCategoryList() {
+export function requestArticleCategoryList(params: ArticleCategoryParams | TRequestParams) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.get<ArticleCategoryListResponse>('/article/category/list');
+  return axios.get<HttpResponse<ArticleCategoryListResponse>>('/article/category/list', {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    },
+  });
 }
 
 /**
@@ -99,5 +108,56 @@ export function requestArticleCategoryList() {
 export function requestArticleCategoryListSelect() {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
   return axios.get<HttpResponse<ArticleCategoryListSelectResponse>>('/article/category/list/select');
+}
+
+/**
+ * 文章分类详情
+ * @param id
+ */
+export function requestArticleCategoryInfo(id: string | number) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.get<HttpResponse<ArticleCategoryInfoResponse>>(`/article/category/info/${id}`);
+}
+
+/**
+ * 新增文章分类
+ * @param params
+ */
+export function requestArticleCategoryAdd(params: ArticleCategoryAddOrUpdateParams) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.post<HttpResponse<ArticleCategoryAddOrUpdateResponse>>(`/article/category/add`, params);
+}
+
+/**
+ * 更新文章分类
+ * @param params
+ */
+export function requestArticleCategoryUpdate(id: string | number, params: ArticleCategoryAddOrUpdateParams) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.put<HttpResponse<ArticleCategoryAddOrUpdateResponse>>(`/article/category/update/${id}`, params);
+}
+
+/**
+ * 更新文章分类字段属性
+ * @param id
+ * @param field
+ * @param value
+ */
+export function requestArticleCategoryUpdateField(
+  id: string | number,
+  field: string,
+  value: string
+) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.patch<HttpResponse>(`/article/category/update/${id}/${field}`, { value });
+}
+
+/**
+ * 文章分类删除
+ * @param id
+ */
+export function requestArticleCategoryDelete(id: string | number) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+  return axios.delete(`/article/category/delete/${id}`);
 }
 

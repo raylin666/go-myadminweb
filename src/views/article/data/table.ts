@@ -7,11 +7,11 @@ import { ComposerTranslation } from 'vue-i18n';
 export const getStatusOptions = (t: ComposerTranslation) : ComputedRef<SelectOptionData[]> => {
     return computed<SelectOptionData[]>(() => [
         {
-          label: t('articleList.form.status.open'),
+          label: t('article.list.form.status.open'),
           value: 1,
         },
         {
-          label: t('articleList.form.status.close'),
+          label: t('article.list.form.status.close'),
           value: 0,
         },
       ]);
@@ -21,11 +21,11 @@ export const getStatusOptions = (t: ComposerTranslation) : ComputedRef<SelectOpt
 export const getRecommendOptions = (t: ComposerTranslation) : ComputedRef<SelectOptionData[]> => {
     return computed<SelectOptionData[]>(() => [
         {
-          label: t('articleList.form.recommend.yes'),
+          label: t('article.list.form.recommend.yes'),
           value: 1,
         },
         {
-          label: t('articleList.form.recommend.no'),
+          label: t('article.list.form.recommend.no'),
           value: 0,
         },
       ]);
@@ -34,74 +34,74 @@ export const getRecommendOptions = (t: ComposerTranslation) : ComputedRef<Select
 // 表格数据列列表
 export const ListColumns = (t: ComposerTranslation) : TableColumnData[] => [
     {
-        title: t('articleList.columns.number'),
+        title: t('article.list.columns.number'),
         dataIndex: 'id',
         fixed: 'left',
         width: 100,
     },
     {
-        title: t('articleList.columns.title'),
+        title: t('article.list.columns.title'),
         dataIndex: 'title',
         width: 240,
     },
     {
-        title: t('articleList.columns.cover'),
+        title: t('article.list.columns.cover'),
         dataIndex: 'cover',
         slotName: 'cover',
         width: 80,
     },
     {
-        title: t('articleList.columns.category'),
+        title: t('article.list.columns.category'),
         dataIndex: 'category',
         slotName: 'category',
         width: 320,
     },
     {
-        title: t('articleList.columns.publisher'),
+        title: t('article.list.columns.publisher'),
         dataIndex: 'publisher',
         slotName: 'publisher_user',
     },
     {
-        title: t('articleList.columns.status'),
+        title: t('article.list.columns.status'),
         dataIndex: 'status',
         slotName: 'status',
         width: 100,
     },
     {
-        title: t('articleList.columns.recommend'),
+        title: t('article.list.columns.recommend'),
         dataIndex: 'recommend_flag',
         slotName: 'recommend_flag',
         width: 100,
     },
     {
-        title: t('articleList.columns.commented'),
+        title: t('article.list.columns.commented'),
         dataIndex: 'commented_flag',
         slotName: 'commented_flag',
         width: 100,
     },
     {
-        title: t('articleList.columns.timeAt'),
+        title: t('article.list.columns.timeAt'),
         dataIndex: 'time_at',
         slotName: 'time_at',
         width: 200,
     },
     {
-        title: t('articleList.columns.sort'),
+        title: t('article.list.columns.sort'),
         dataIndex: 'sort',
         width: 80,
     },
     {
-        title: t('articleList.columns.viewCount'),
+        title: t('article.list.columns.viewCount'),
         dataIndex: 'view_count',
         width: 80,
     },
     {
-        title: t('articleList.columns.commentCount'),
+        title: t('article.list.columns.commentCount'),
         dataIndex: 'comment_count',
         width: 80,
     },
     {
-        title: t('articleList.columns.operations'),
+        title: t('article.list.columns.operations'),
         dataIndex: 'operations',
         slotName: 'operations',
         fixed: 'right',

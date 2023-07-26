@@ -31,29 +31,29 @@
               <a-col :span="8">
                 <a-form-item
                   field="number"
-                  :label="$t('articleList.form.number')"
+                  :label="$t('article.list.form.number')"
                 >
                   <a-input
                     v-model="propsForm.fields.number"
-                    :placeholder="$t('articleList.form.number.placeholder')"
+                    :placeholder="$t('article.list.form.number.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="title"
-                  :label="$t('articleList.form.title')"
+                  :label="$t('article.list.form.title')"
                 >
                   <a-input
                     v-model="propsForm.fields.title"
-                    :placeholder="$t('articleList.form.title.placeholder')"
+                    :placeholder="$t('article.list.form.title.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="category"
-                  :label="$t('articleList.form.category')"
+                  :label="$t('article.list.form.category')"
                 >
                   <a-select
                     v-model="propsForm.fields.category"
@@ -64,7 +64,7 @@
               <a-col :span="8">
                 <a-form-item
                   field="created_at"
-                  :label="$t('articleList.form.createdAt')"
+                  :label="$t('article.list.form.createdAt')"
                 >
                   <a-range-picker
                     v-model="propsForm.fields.createdAt"
@@ -75,7 +75,7 @@
               <a-col :span="8">
                 <a-form-item
                   field="status"
-                  :label="$t('articleList.form.status')"
+                  :label="$t('article.list.form.status')"
                 >
                   <a-select
                     v-model="propsForm.fields.status"
@@ -87,7 +87,7 @@
               <a-col :span="8">
                 <a-form-item
                   field="recommend"
-                  :label="$t('articleList.form.recommend')"
+                  :label="$t('article.list.form.recommend')"
                 >
                   <a-select
                     v-model="propsForm.fields.recommend"
@@ -125,7 +125,7 @@
               <template #icon>
                 <icon-plus />
               </template>
-              {{ $t('articleList.create') }}
+              {{ $t('article.list.create') }}
             </a-button>
             <a-button
               type="primary"
@@ -251,10 +251,10 @@
             :key="index"
             bordered
             :color="item.color"
-            style="margin-right: 5px; margin-bottom: 5px;"
+            style="margin-right: 5px; margin-bottom: 5px; border: 0;"
           >
             <template #icon>
-              <icon-tag />
+              <icon-tag style="color:#ffffff;" />
             </template>
             {{ item.name }}
           </a-tag>
@@ -309,11 +309,11 @@
         </template>
         <template #operations="{ record }">
           <a-button v-permission="['admin']" type="primary" size="mini" @click="infoAction(record.id)">
-            {{ $t('articleList.columns.operations.info') }}
+            {{ $t('article.list.columns.operations.info') }}
           </a-button>
           &nbsp;
           <a-button v-permission="['admin']" status="warning" size="mini" @click="updateAction(record.id)">
-            {{ $t('articleList.columns.operations.edit') }}
+            {{ $t('article.list.columns.operations.edit') }}
           </a-button>
           &nbsp;
           <a-popconfirm
@@ -328,7 +328,7 @@
               status="danger"
               size="mini"
             >
-              {{ $t('articleList.columns.operations.delete') }}
+              {{ $t('article.list.columns.operations.delete') }}
             </a-button>
           </a-popconfirm>
         </template>

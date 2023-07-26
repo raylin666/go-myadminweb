@@ -5,7 +5,7 @@
       @cancel="() => propsTable.visible.add = false"
       @form-callback-success="formCallbackSuccess"
     />
-    <UpdateArticleDrawerPage
+    <UpdateChatbotModelPage
       :visible="propsTable.visible.update"
       :id="id"
       @cancel="() => propsTable.visible.update = false"
@@ -252,7 +252,7 @@
   } from '@/api/chatbot';
   import { TRequestParams } from '@/types/global';
   import AddChatbotModelPage from './components/add.vue';
-  import UpdateArticleDrawerPage from './components/update.vue';
+  import UpdateChatbotModelPage from './components/update.vue';
   import { ChatbotListParams } from '@/types/chatbot';
   import useFormProps from '@/hooks/form';
   import { useTableProps, getDensityListOptions } from '@/hooks/table';

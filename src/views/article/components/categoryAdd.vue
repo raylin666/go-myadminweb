@@ -2,7 +2,6 @@
   <a-modal 
     :visible="visible"
     width="50%"
-    draggable
     unmount-on-close
     :mask-closable="false"
     @cancel="emit('cancel')" 

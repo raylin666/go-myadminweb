@@ -6,7 +6,7 @@
     :mask-closable="false"
     @cancel="emit('cancel')" 
     @ok="eventFormSubmitClick('form-submit')">
-    <template #title> {{ t('article.category.form.basic.update.title') }} </template>
+    <template #title> {{ t('chatbot.form.basic.update.title') }} </template>
 
     <div>
       <p></p>
@@ -22,11 +22,11 @@
             <a-col :span="24">
               <a-form-item
                 field="name"
-                :label="$t('article.category.form.basic.name')"
+                :label="$t('chatbot.form.basic.name')"
                 :rules="[
                   {
                     required: true,
-                    message: $t('article.category.form.basic.name.validate.message'),
+                    message: $t('chatbot.form.basic.name.validate.message'),
                   },
                 ]"
                 :validate-trigger="['change', 'input']"
@@ -34,7 +34,7 @@
                 <a-input
                   v-model="propsForm.fields.name"
                   allow-clear
-                  :placeholder="$t('article.category.form.basic.name.placeholder')"
+                  :placeholder="$t('chatbot.form.basic.name.placeholder')"
                 />
               </a-form-item>
             </a-col>
@@ -43,11 +43,11 @@
             <a-col :span="24">
               <a-form-item
                 field="pid"
-                :label="$t('article.category.form.basic.pid')"
+                :label="$t('chatbot.form.basic.pid')"
                 :rules="[
                   {
                     required: true,
-                    message: $t('article.category.form.basic.pid.validate.message'),
+                    message: $t('chatbot.form.basic.pid.validate.message'),
                   },
                 ]"
                 :validate-trigger="['change', 'input']"
@@ -57,7 +57,7 @@
                   :options="categoryOptions"
                   :field-names="{ value: 'id', label: 'name' }"
                   allow-clear
-                  :placeholder="$t('article.category.form.basic.pid.placeholder')"
+                  :placeholder="$t('chatbot.form.basic.pid.placeholder')"
                 />
               </a-form-item>
             </a-col>
@@ -66,11 +66,11 @@
             <a-col :span="24">
               <a-form-item
                 field="icon"
-                :label="$t('article.category.form.basic.icon')"
+                :label="$t('chatbot.form.basic.icon')"
                 :rules="[
                   {
                     required: true,
-                    message: $t('article.category.form.basic.icon.validate.message'),
+                    message: $t('chatbot.form.basic.icon.validate.message'),
                   },
                 ]"
                 :validate-trigger="['change', 'input']"
@@ -79,7 +79,7 @@
                 <a-input
                   v-model="propsForm.fields.icon"
                   allow-clear
-                  :placeholder="$t('article.category.form.basic.icon.placeholder')"
+                  :placeholder="$t('chatbot.form.basic.icon.placeholder')"
                 />
               </a-form-item>
             </a-col>
@@ -88,7 +88,7 @@
             <a-col :span="24">
               <a-form-item
                 field="describe"
-                :label="$t('article.category.form.basic.describe')"
+                :label="$t('chatbot.form.basic.describe')"
                 :rules="[
                   {
                     required: true,

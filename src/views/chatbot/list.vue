@@ -170,7 +170,6 @@
         :stripe="true"
         v-model:expandedKeys="expandedKeys"
         :hide-expand-button-on-empty="false"
-        :scroll="{ x: 2000 }"
         @page-change="eventTablePageChange"
         @select="eventTableRowSelected"
       >

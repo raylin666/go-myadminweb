@@ -1,7 +1,7 @@
-import { requestUploadFileStream } from "@/api/upload";
-import { fileToBase64 } from "@/utils/file";
-import { RequestOption } from "@arco-design/web-vue";
-import { reactive } from "vue";
+import { requestUploadFileStream } from '@/api/upload';
+import { fileToBase64 } from '@/utils/file';
+import { RequestOption } from '@arco-design/web-vue';
+import { reactive } from 'vue';
 
 export default class Upload {
   // 本地文件资源
@@ -21,8 +21,8 @@ export default class Upload {
       }
       stream = stream.split(',');
 
-      await requestUploadFileStream(stream[1], extension)
-        .then((response: any) => {
+      await requestUploadFileStream(stream[1], extension).then(
+        (response: any) => {
           if (response.data.ok) {
             this.setFile(name, {
               name: option.fileItem.name,
@@ -33,7 +33,8 @@ export default class Upload {
               url: response.data.data.url,
             });
           }
-        })
+        }
+      );
     });
   }
 

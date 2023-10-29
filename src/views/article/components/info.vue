@@ -14,10 +14,7 @@
     <div>
       <p></p>
       <a-space direction="vertical" size="large" :style="{ width: '100%' }">
-        <a-form
-          :model="propsForm.fields"
-          :layout="propsForm.layoutMode"
-        >
+        <a-form :model="propsForm.fields" :layout="propsForm.layoutMode">
           <a-row :gutter="24">
             <a-col :span="24">
               <a-form-item
@@ -25,15 +22,12 @@
                 disabled
                 :label="$t('article.form.basic.title')"
               >
-                <a-input
-                  v-model="propsForm.fields.title"
-                  allow-clear
-                />
+                <a-input v-model="propsForm.fields.title" allow-clear />
               </a-form-item>
             </a-col>
           </a-row>
           <a-row :gutter="24">
-            <a-col :span="22">
+            <a-col :span="21">
               <a-form-item
                 field="summary"
                 disabled
@@ -44,11 +38,11 @@
                   :max-length="{ length: 250, errorOnly: true }"
                   allow-clear
                   show-word-limit
-                  style="height: 92px;"
+                  style="height: 92px"
                 />
               </a-form-item>
             </a-col>
-            <a-col :span="2">
+            <a-col :span="3">
               <a-form-item
                 field="cover"
                 disabled
@@ -71,10 +65,15 @@
                         v-if="coverFile && coverFile.url"
                         class="arco-upload-list-picture custom-upload-avatar"
                       >
-                        <img :src="coverFile.url" :alt="coverFile.url" />
+                        <a-image
+                          width="160"
+                          :alt="coverFile.url"
+                          :src="coverFile.url"
+                        ></a-image>
                         <a-progress
                           v-if="
-                            coverFile.status === 'uploading' && coverFile.percent < 100
+                            coverFile.status === 'uploading' &&
+                            coverFile.percent < 100
                           "
                           :percent="coverFile.percent"
                           type="circle"
@@ -160,8 +159,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
-                  <template #checked-icon><icon-check/></template>
-                  <template #unchecked-icon><icon-close/></template>
+                  <template #checked-icon><icon-check /></template>
+                  <template #unchecked-icon><icon-close /></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -171,11 +170,14 @@
                 disabled
                 :label="$t('article.form.basic.recommend_flag')"
               >
-                <a-switch v-model="propsForm.fields.recommend_flag" type="round">
+                <a-switch
+                  v-model="propsForm.fields.recommend_flag"
+                  type="round"
+                >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
-                  <template #checked-icon><icon-check/></template>
-                  <template #unchecked-icon><icon-close/></template>
+                  <template #checked-icon><icon-check /></template>
+                  <template #unchecked-icon><icon-close /></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -192,8 +194,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
-                  <template #checked-icon><icon-check/></template>
-                  <template #unchecked-icon><icon-close/></template>
+                  <template #checked-icon><icon-check /></template>
+                  <template #unchecked-icon><icon-close /></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -234,7 +236,10 @@
                 field="last_commented_at"
                 :label="$t('article.form.basic.last_commented_at')"
               >
-                <a-input v-model="propsForm.fields.last_commented_at" disabled />
+                <a-input
+                  v-model="propsForm.fields.last_commented_at"
+                  disabled
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -319,17 +324,27 @@
                 disabled
                 :label="$t('article.form.basic.attachment_path')"
               >
-              <a-image-preview-group infinite>
-                <a-space v-for="(url, index) in propsForm.fields.attachment_path" :key="index">
-                  <a-image :src="url" width="100" height="100" style="margin-right: 20px;" />
-                </a-space>
-              </a-image-preview-group>
+                <a-image-preview-group infinite>
+                  <a-space
+                    v-for="(url, index) in propsForm.fields.attachment_path"
+                    :key="index"
+                  >
+                    <a-image
+                      :src="url"
+                      width="100"
+                      height="100"
+                      style="margin-right: 20px"
+                    />
+                  </a-space>
+                </a-image-preview-group>
               </a-form-item>
             </a-col>
           </a-row>
           <a-row :gutter="24">
             <a-col :span="24">
-              <a-divider orientation="center">{{ t('article.form.basic.content.preview') }}</a-divider>
+              <a-divider orientation="center">{{
+                t('article.form.basic.content.preview')
+              }}</a-divider>
               <MdPreview v-model="propsForm.fields.content" />
             </a-col>
           </a-row>
@@ -377,10 +392,7 @@
   /**
    * 表单组件
    */
-  const {
-    propsForm,
-    eventFormResetFields,
-  } = useFormProps(FormModel);
+  const { propsForm, eventFormResetFields } = useFormProps(FormModel);
 
   const coverFile = ref();
 
@@ -415,10 +427,13 @@
           }
           propsForm.fields.view_count = data.data.view_count.toString();
           propsForm.fields.comment_count = data.data.comment_count.toString();
-          propsForm.fields.collection_count = data.data.collection_count.toString();
+          propsForm.fields.collection_count =
+            data.data.collection_count.toString();
           propsForm.fields.zan_count = data.data.zan_count.toString();
           propsForm.fields.share_count = data.data.share_count.toString();
-          propsForm.fields.last_commented_at = data.data.last_commented_at ? data.data.last_commented_at : '';
+          propsForm.fields.last_commented_at = data.data.last_commented_at
+            ? data.data.last_commented_at
+            : '';
           propsForm.fields.created_at = data.data.created_at;
           propsForm.fields.updated_at = data.data.updated_at;
           propsForm.fields.source = data.data.source;
@@ -432,3 +447,12 @@
     }
   );
 </script>
+
+<style lang="less" scoped>
+  :deep(.arco-upload-picture-card) {
+    width: 160px;
+  }
+  :deep(.arco-upload-list-picture) {
+    width: 160px;
+  }
+</style>

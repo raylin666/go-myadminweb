@@ -44,16 +44,25 @@ export function requestArticleInfo(id: string | number) {
  */
 export function requestArticleAdd(params: ArticleAddOrUpdateParams) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.post<HttpResponse<ArticleAddOrUpdateResponse>>(`/article/add`, params);
+  return axios.post<HttpResponse<ArticleAddOrUpdateResponse>>(
+    `/article/add`,
+    params
+  );
 }
 
 /**
  * 更新文章
  * @param params
  */
-export function requestArticleUpdate(id: string | number, params: ArticleAddOrUpdateParams) {
+export function requestArticleUpdate(
+  id: string | number,
+  params: ArticleAddOrUpdateParams
+) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.put<HttpResponse<ArticleAddOrUpdateResponse>>(`/article/update/${id}`, params);
+  return axios.put<HttpResponse<ArticleAddOrUpdateResponse>>(
+    `/article/update/${id}`,
+    params
+  );
 }
 
 /**
@@ -92,14 +101,19 @@ export function requestArticleBatchDelete(ids: number[]) {
 /**
  * 文章分类列表
  */
-export function requestArticleCategoryList(params: ArticleCategoryParams | TRequestParams) {
+export function requestArticleCategoryList(
+  params: ArticleCategoryParams | TRequestParams
+) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.get<HttpResponse<ArticleCategoryListResponse>>('/article/category/list', {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
-  });
+  return axios.get<HttpResponse<ArticleCategoryListResponse>>(
+    '/article/category/list',
+    {
+      params,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      },
+    }
+  );
 }
 
 /**
@@ -107,7 +121,9 @@ export function requestArticleCategoryList(params: ArticleCategoryParams | TRequ
  */
 export function requestArticleCategoryListSelect() {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.get<HttpResponse<ArticleCategoryListSelectResponse>>('/article/category/list/select');
+  return axios.get<HttpResponse<ArticleCategoryListSelectResponse>>(
+    '/article/category/list/select'
+  );
 }
 
 /**
@@ -116,25 +132,38 @@ export function requestArticleCategoryListSelect() {
  */
 export function requestArticleCategoryInfo(id: string | number) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.get<HttpResponse<ArticleCategoryInfoResponse>>(`/article/category/info/${id}`);
+  return axios.get<HttpResponse<ArticleCategoryInfoResponse>>(
+    `/article/category/info/${id}`
+  );
 }
 
 /**
  * 新增文章分类
  * @param params
  */
-export function requestArticleCategoryAdd(params: ArticleCategoryAddOrUpdateParams) {
+export function requestArticleCategoryAdd(
+  params: ArticleCategoryAddOrUpdateParams
+) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.post<HttpResponse<ArticleCategoryAddOrUpdateResponse>>(`/article/category/add`, params);
+  return axios.post<HttpResponse<ArticleCategoryAddOrUpdateResponse>>(
+    `/article/category/add`,
+    params
+  );
 }
 
 /**
  * 更新文章分类
  * @param params
  */
-export function requestArticleCategoryUpdate(id: string | number, params: ArticleCategoryAddOrUpdateParams) {
+export function requestArticleCategoryUpdate(
+  id: string | number,
+  params: ArticleCategoryAddOrUpdateParams
+) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.put<HttpResponse<ArticleCategoryAddOrUpdateResponse>>(`/article/category/update/${id}`, params);
+  return axios.put<HttpResponse<ArticleCategoryAddOrUpdateResponse>>(
+    `/article/category/update/${id}`,
+    params
+  );
 }
 
 /**
@@ -149,7 +178,9 @@ export function requestArticleCategoryUpdateField(
   value: string
 ) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  return axios.patch<HttpResponse>(`/article/category/update/${id}/${field}`, { value });
+  return axios.patch<HttpResponse>(`/article/category/update/${id}/${field}`, {
+    value,
+  });
 }
 
 /**
@@ -160,4 +191,3 @@ export function requestArticleCategoryDelete(id: string | number) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
   return axios.delete(`/article/category/delete/${id}`);
 }
-

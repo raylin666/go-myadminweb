@@ -2,13 +2,13 @@
   <div class="container">
     <AddChatbotModelPage
       :visible="propsTable.visible.add"
-      @cancel="() => propsTable.visible.add = false"
+      @cancel="() => (propsTable.visible.add = false)"
       @form-callback-success="formCallbackSuccess"
     />
     <UpdateChatbotModelPage
-      :visible="propsTable.visible.update"
       :id="id"
-      @cancel="() => propsTable.visible.update = false"
+      :visible="propsTable.visible.update"
+      @cancel="() => (propsTable.visible.update = false)"
       @form-callback-success="formCallbackSuccess"
     />
 
@@ -24,10 +24,7 @@
           >
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item
-                  field="number"
-                  :label="$t('chatbot.form.number')"
-                >
+                <a-form-item field="number" :label="$t('chatbot.form.number')">
                   <a-input
                     v-model="propsForm.fields.number"
                     :placeholder="$t('chatbot.form.number.placeholder')"
@@ -35,10 +32,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="12">
-                <a-form-item
-                  field="name"
-                  :label="$t('chatbot.form.name')"
-                >
+                <a-form-item field="name" :label="$t('chatbot.form.name')">
                   <a-input
                     v-model="propsForm.fields.name"
                     :placeholder="$t('chatbot.form.name.placeholder')"
@@ -46,10 +40,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="12">
-                <a-form-item
-                  field="pid"
-                  :label="$t('chatbot.form.pid')"
-                >
+                <a-form-item field="pid" :label="$t('chatbot.form.pid')">
                   <a-select
                     v-model="propsForm.fields.pid"
                     :placeholder="$t('search.form.selectDefault')"
@@ -57,10 +48,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="12">
-                <a-form-item
-                  field="status"
-                  :label="$t('chatbot.form.status')"
-                >
+                <a-form-item field="status" :label="$t('chatbot.form.status')">
                   <a-select
                     v-model="propsForm.fields.status"
                     :options="statusOptions"
@@ -93,7 +81,10 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="() => propsTable.visible.add = true">
+            <a-button
+              type="primary"
+              @click="() => (propsTable.visible.add = true)"
+            >
               <template #icon>
                 <icon-plus />
               </template>
@@ -160,15 +151,15 @@
         </a-col>
       </a-row>
       <a-table
+        v-model:expandedKeys="expandedKeys"
         row-key="id"
         :loading="propsTable.loading"
         :pagination="propsTable.pagination"
         :columns="propsTable.columns"
         :data="propsTable.list"
         :size="propsTable.tableSize"
-        :bordered="{ 'wrapper': true, 'headerCell': true }"
+        :bordered="{ wrapper: true, headerCell: true }"
         :stripe="true"
-        v-model:expandedKeys="expandedKeys"
         :hide-expand-button-on-empty="false"
         @page-change="eventTablePageChange"
         @select="eventTableRowSelected"
@@ -188,7 +179,12 @@
         </template>
         <template #icon="{ record }">
           <span v-if="record.icon">
-            <IconPark :type="record.icon" theme="outline" size="24" fill="#333" />
+            <IconPark
+              :type="record.icon"
+              theme="outline"
+              size="24"
+              fill="#333"
+            />
           </span>
         </template>
         <template #status="{ record, rowIndex }">
@@ -202,21 +198,43 @@
           >
             <template #checked>已启用</template>
             <template #unchecked>已禁用</template>
-            <template #checked-icon><icon-check/></template>
-            <template #unchecked-icon><icon-close/></template>
+            <template #checked-icon><icon-check /></template>
+            <template #unchecked-icon><icon-close /></template>
           </a-switch>
         </template>
         <template #operations="{ record }">
           <span v-if="record.question">
-            <a-tooltip background-color="rgb(var(--primary-5))" :content="record.question" position="left">
-              <a-button v-permission="['admin']" size="mini" type="primary" status="success">{{ $t('chatbot.columns.operations.question') }}</a-button>
+            <a-tooltip
+              background-color="rgb(var(--primary-5))"
+              :content="record.question"
+              position="left"
+            >
+              <a-button
+                v-permission="['admin']"
+                size="mini"
+                type="primary"
+                status="success"
+                >{{ $t('chatbot.columns.operations.question') }}</a-button
+              >
             </a-tooltip>
           </span>
           <span v-else>
-            <a-button disabled v-permission="['admin']" size="mini" type="primary" status="success">{{ $t('chatbot.columns.operations.notQuestion') }}</a-button>
+            <a-button
+              v-permission="['admin']"
+              disabled
+              size="mini"
+              type="primary"
+              status="success"
+              >{{ $t('chatbot.columns.operations.notQuestion') }}</a-button
+            >
           </span>
           &nbsp;
-          <a-button v-permission="['admin']" status="warning" size="mini" @click="updateAction(record.id)">
+          <a-button
+            v-permission="['admin']"
+            status="warning"
+            size="mini"
+            @click="updateAction(record.id)"
+          >
             {{ $t('chatbot.columns.operations.edit') }}
           </a-button>
           &nbsp;
@@ -224,7 +242,9 @@
             :content="eventTableDeletePopConfirm(`[${record.name}] 场景分类`)"
             type="warning"
             position="left"
-            @ok="deleteTableDataLine(requestChatbotDelete(record.id), record.name)"
+            @ok="
+              deleteTableDataLine(requestChatbotDelete(record.id), record.name)
+            "
           >
             <a-button
               v-permission="['admin']"
@@ -256,14 +276,14 @@
   import useFormProps from '@/hooks/form';
   import { useTableProps, getDensityListOptions } from '@/hooks/table';
   import { ListColumns, getStatusOptions } from './data/table';
-  import { searchFormModel } from './data/form'
+  import { searchFormModel } from './data/form';
   // 图标官网: http://iconpark.oceanengine.com/official
-  import { IconPark } from '@icon-park/vue-next/es/all'
+  import { IconPark } from '@icon-park/vue-next/es/all';
 
   /**
    * 国际语言
    */
-   const { t } = useI18n();
+  const { t } = useI18n();
 
   /**
    * 表格组件
@@ -273,9 +293,9 @@
     return requestChatbotList(params);
   };
 
-  const { 
+  const {
     propsTable,
-    getTableDataList, 
+    getTableDataList,
     setTableColumns,
     eventTablePageChange,
     eventTableRefreshDataList,
@@ -302,9 +322,7 @@
   watch(
     () => propsTable.list,
     (list) => {
-      list.forEach((item: any) => {
-        expandedKeys.value.push(item.id);
-      });
+      list.forEach((item: any) => expandedKeys.value.push(item.id));
     }
   );
 
@@ -313,28 +331,31 @@
    */
   // 表格状态改变事件
   const visibleTableAttributeStatusChecked = (record: any) => {
-    visibleTableAttributeChecked(record.status)
+    visibleTableAttributeChecked(record.status);
     return record.status === 1;
   };
   const eventTableAttributeStatusChange = (record: any, rowIndex: any) => {
     const value = record.status === 1 ? 0 : 1;
+    // eslint-disable-next-line func-names
     const callback = function () {
       propsTable.list[rowIndex].status = value;
     };
-    updateTableFieldAttribute(requestChatbotUpdateField(record.id, 'status', value.toString()), '场景分类状态', callback);
+    updateTableFieldAttribute(
+      requestChatbotUpdateField(record.id, 'status', value.toString()),
+      '场景分类状态',
+      callback
+    );
   };
 
   /**
    * 表单组件
    */
-  const {
-    propsForm,
-    eventFormResetFields,
-    eventFormSearch,
-  } = useFormProps(searchFormModel);
+  const { propsForm, eventFormResetFields, eventFormSearch } =
+    useFormProps(searchFormModel);
 
   // 新增/修改 表单提交成功后的回调处理
-  const formCallbackSuccess = (id: string | number) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const formCallbackSuccess = (_id: string | number) => {
     getTableDataList();
   };
 

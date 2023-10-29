@@ -41,7 +41,7 @@
             </a-col>
           </a-row>
           <a-row :gutter="24">
-            <a-col :span="22">
+            <a-col :span="21">
               <a-form-item
                 field="summary"
                 :label="$t('article.form.basic.summary')"
@@ -59,11 +59,11 @@
                   :max-length="{ length: 250, errorOnly: true }"
                   allow-clear
                   show-word-limit
-                  style="height: 92px;"
+                  style="height: 92px"
                 />
               </a-form-item>
             </a-col>
-            <a-col :span="2">
+            <a-col :span="3">
               <a-form-item
                 field="cover"
                 :label="$t('article.form.basic.cover')"
@@ -95,13 +95,18 @@
                         v-if="coverFile && coverFile.url"
                         class="arco-upload-list-picture custom-upload-avatar"
                       >
-                        <img :src="coverFile.url" :alt="coverFile.url" />
+                        <a-image
+                          width="160"
+                          :alt="coverFile.url"
+                          :src="coverFile.url"
+                        ></a-image>
                         <div class="arco-upload-list-picture-mask">
                           <IconEdit />
                         </div>
                         <a-progress
                           v-if="
-                            coverFile.status === 'uploading' && coverFile.percent < 100
+                            coverFile.status === 'uploading' &&
+                            coverFile.percent < 100
                           "
                           :percent="coverFile.percent"
                           type="circle"
@@ -218,8 +223,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
-                  <template #checked-icon><icon-check/></template>
-                  <template #unchecked-icon><icon-close/></template>
+                  <template #checked-icon><icon-check /></template>
+                  <template #unchecked-icon><icon-close /></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -228,11 +233,14 @@
                 field="recommend_flag"
                 :label="$t('article.form.basic.recommend_flag')"
               >
-                <a-switch v-model="propsForm.fields.recommend_flag" type="round">
+                <a-switch
+                  v-model="propsForm.fields.recommend_flag"
+                  type="round"
+                >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
-                  <template #checked-icon><icon-check/></template>
-                  <template #unchecked-icon><icon-close/></template>
+                  <template #checked-icon><icon-check /></template>
+                  <template #unchecked-icon><icon-close /></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -248,8 +256,8 @@
                 >
                   <template #checked>ON</template>
                   <template #unchecked>OFF</template>
-                  <template #checked-icon><icon-check/></template>
-                  <template #unchecked-icon><icon-close/></template>
+                  <template #checked-icon><icon-check /></template>
+                  <template #unchecked-icon><icon-close /></template>
                 </a-switch>
               </a-form-item>
             </a-col>
@@ -260,7 +268,11 @@
                 field="user_id"
                 :label="$t('article.form.basic.user_id')"
               >
-                <a-input v-model="propsForm.fields.user_id" allow-clear disabled />
+                <a-input
+                  v-model="propsForm.fields.user_id"
+                  allow-clear
+                  disabled
+                />
               </a-form-item>
             </a-col>
             <a-col :span="12">
@@ -333,9 +345,16 @@
   import IconPlus from '@arco-design/web-vue/es/icon/icon-plus';
   import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
   import MdEditor from '@/components/editor/index.vue';
-  import { FileItem, RequestOption } from '@arco-design/web-vue/es/upload/interfaces';
+  import {
+    FileItem,
+    RequestOption,
+  } from '@arco-design/web-vue/es/upload/interfaces';
   import { MessageSuccess } from '@/utils/notification';
-  import { requestArticleCategoryListSelect, requestArticleUpdate, requestArticleInfo } from '@/api/article';
+  import {
+    requestArticleCategoryListSelect,
+    requestArticleUpdate,
+    requestArticleInfo,
+  } from '@/api/article';
   import { useUserStore } from '@/store';
   import { onMounted } from 'vue';
   import useFormProps from '@/hooks/form';
@@ -458,7 +477,11 @@
       const file = uploadAttachmentPathInS.getFile(uploadAttachmentPathName);
       if (file && Reflect.has(file, 'url')) {
         isUploadSuccess.value = true;
-        attachmentPathFile.value.push({ uid: file.uid, name: file.name, url: file.url });
+        attachmentPathFile.value.push({
+          uid: file.uid,
+          name: file.name,
+          url: file.url,
+        });
         propsForm.fields.attachment_path.push(file.url);
         MessageSuccess('文件上传成功');
       }
@@ -473,14 +496,21 @@
     );
   };
   const uploadAttachmentPathChange = (_: any, currentFile: any) => {
-    uploadAttachmentPathInS.uploadChange(uploadAttachmentPathName, _, currentFile);
+    uploadAttachmentPathInS.uploadChange(
+      uploadAttachmentPathName,
+      _,
+      currentFile
+    );
   };
   const uploadAttachmentPathProgress = (currentFile: any) => {
-    uploadAttachmentPathInS.uploadProgress(uploadAttachmentPathName, currentFile);
+    uploadAttachmentPathInS.uploadProgress(
+      uploadAttachmentPathName,
+      currentFile
+    );
   };
   const uploadAttachmentPathFileRemove = (fileItem: FileItem) => {
-    const newArray : string[] = [];
-    const newLocalArray : [] = [];
+    const newArray: string[] = [];
+    const newLocalArray: [] = [];
     propsForm.fields.attachment_path.forEach((url: any) => {
       if (url !== fileItem.url) {
         newArray.push(url);
@@ -571,8 +601,8 @@
     });
 
     eventFormSubmitSuccess(
-      { errors, values }, 
-      requestFn, 
+      { errors, values },
+      requestFn,
       function () {
         // 关闭抽屉
         emit('cancel');
@@ -583,3 +613,12 @@
     );
   };
 </script>
+
+<style lang="less" scoped>
+  :deep(.arco-upload-picture-card) {
+    width: 160px;
+  }
+  :deep(.arco-upload-list-picture) {
+    width: 160px;
+  }
+</style>

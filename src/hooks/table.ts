@@ -1,16 +1,31 @@
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { AxiosResponse } from 'axios';
-import { HttpResponse, Pagination, TRequestParams, TResponse } from '@/types/global';
+import {
+  HttpResponse,
+  Pagination,
+  TRequestParams,
+  TResponse,
+} from '@/types/global';
 import { DEFAULT_PAGE_NUM, DEFAULT_PAGE_SIZE } from '@/types/constant';
-import { TableColumnData, TableData, TableRowSelection } from '@arco-design/web-vue';
+import {
+  TableColumnData,
+  TableData,
+  TableRowSelection,
+} from '@arco-design/web-vue';
 import { cloneDeep } from 'lodash';
 import { ComposerTranslation } from 'vue-i18n';
-import { MessageSuccess, MessageWarning, NotificationSuccess } from '@/utils/notification';
+import {
+  MessageSuccess,
+  MessageWarning,
+  NotificationSuccess,
+} from '@/utils/notification';
 import Sortable from 'sortablejs';
 import { exchangeArray } from '@/utils/array';
 
 // API 请求列表数据函数
-type ApiListFn = (params: TRequestParams) => Promise<AxiosResponse<HttpResponse<TResponse>, any>>;
+type ApiListFn = (
+  params: TRequestParams
+) => Promise<AxiosResponse<HttpResponse<TResponse>, any>>;
 
 // 表格大小设置
 type TableSizeProps = 'mini' | 'small' | 'medium' | 'large';
@@ -57,9 +72,9 @@ export function useTableProps(api: ApiListFn) {
     list: <Array<any>>[],
     // 表格选择行设置
     tableRowSelection: <TableRowSelection>{
-      type: 'checkbox',     // 行选择器的类型 checkbox | radio
+      type: 'checkbox', // 行选择器的类型 checkbox | radio
       showCheckedAll: true, // 是否显示全选选择器
-      onlyCurrent: false,   // 是否仅展示当前页的 keys（切换分页时清空 keys）
+      onlyCurrent: false, // 是否仅展示当前页的 keys（切换分页时清空 keys）
     },
     // 表格多行选择的 Keys
     tableRowSelectedKeys: <number[]>[],
@@ -114,14 +129,20 @@ export function useTableProps(api: ApiListFn) {
       });
 
       propsTable.data = data;
-      propsTable.pagination.current = data.data.current_page ? data.data.current_page : DEFAULT_PAGE_NUM;
-      propsTable.pagination.pageSize = data.data.size ? data.data.size : DEFAULT_PAGE_SIZE;
+      propsTable.pagination.current = data.data.current_page
+        ? data.data.current_page
+        : DEFAULT_PAGE_NUM;
+      propsTable.pagination.pageSize = data.data.size
+        ? data.data.size
+        : DEFAULT_PAGE_SIZE;
       // 列表数据 propsTable.data.data.list
       if (propsTable.data.data.list) {
         propsTable.list = propsTable.data.data.list;
       }
 
-      propsTable.pagination.total = data.data.total ? data.data.total : propsTable.list.length;
+      propsTable.pagination.total = data.data.total
+        ? data.data.total
+        : propsTable.list.length;
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -138,7 +159,11 @@ export function useTableProps(api: ApiListFn) {
   };
 
   // 表格字段属性更新
-  const updateTableFieldAttribute = async (updateFieldApi: Promise<AxiosResponse<HttpResponse, any>>, fieldName: string, callback: () => void) => {
+  const updateTableFieldAttribute = async (
+    updateFieldApi: Promise<AxiosResponse<HttpResponse, any>>,
+    fieldName: string,
+    callback: () => void
+  ) => {
     propsTable.loading = true;
     try {
       if (fieldName === '') {
@@ -158,13 +183,16 @@ export function useTableProps(api: ApiListFn) {
   };
 
   // 表格行数据删除
-  const deleteTableDataLine = async (deleteApi: Promise<AxiosResponse<HttpResponse, any>>, title: string) => {
+  const deleteTableDataLine = async (
+    deleteApi: Promise<AxiosResponse<HttpResponse, any>>,
+    title: string
+  ) => {
     propsTable.loading = true;
     try {
       const { data } = await deleteApi;
       if (data.ok) {
         // 当列表数据只剩一条(该删除后为0)并且当前页码大于1时, 则获取上一页数据
-        if ((propsTable.list.length === 1) && (propsTable.pagination.current > 1)) {
+        if (propsTable.list.length === 1 && propsTable.pagination.current > 1) {
           propsTable.pagination.current -= 1;
         }
 
@@ -180,14 +208,19 @@ export function useTableProps(api: ApiListFn) {
   };
 
   // 表格选择行批量数据删除
-  const deleteTableDataSelectBatchLine = async (deleteApi: Promise<AxiosResponse<HttpResponse, any>>) => {
+  const deleteTableDataSelectBatchLine = async (
+    deleteApi: Promise<AxiosResponse<HttpResponse, any>>
+  ) => {
     propsTable.loading = true;
     try {
       const { data } = await deleteApi;
       if (data.ok) {
         // 当列表数据都被删除并且当前页码大于1时, 则获取上一页数据
         const selectCount = propsTable.tableRowSelectedKeys.length;
-        if (((propsTable.list.length - selectCount) === 1) && (propsTable.pagination.current > 1)) {
+        if (
+          propsTable.list.length - selectCount === 1 &&
+          propsTable.pagination.current > 1
+        ) {
           propsTable.pagination.current -= 1;
         }
 
@@ -276,20 +309,20 @@ export function useTableProps(api: ApiListFn) {
     if (propsTable.tableRowSelectedKeys.length >= propsTable.list.length) {
       propsTable.tableRowSelectedKeys = [];
     } else {
-      propsTable.list.forEach((item, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      propsTable.list.forEach((item, _index) => {
         if (Reflect.has(item, 'id')) {
           propsTable.tableRowSelectedKeys.push(Reflect.get(item, 'id'));
         }
       });
 
       // eslint-disable-next-line func-names
-      propsTable.tableRowSelectedKeys = propsTable.tableRowSelectedKeys.filter(function (
-        x,
-        index,
-        self
-      ) {
-        return self.indexOf(x) === index;
-      });
+      propsTable.tableRowSelectedKeys = propsTable.tableRowSelectedKeys.filter(
+        // eslint-disable-next-line func-names
+        function (x, index, self) {
+          return self.indexOf(x) === index;
+        }
+      );
     }
   };
 

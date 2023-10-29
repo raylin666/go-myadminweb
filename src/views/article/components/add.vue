@@ -41,7 +41,7 @@
             </a-col>
           </a-row>
           <a-row :gutter="24">
-            <a-col :span="22">
+            <a-col :span="21">
               <a-form-item
                 field="summary"
                 :label="$t('article.form.basic.summary')"
@@ -63,7 +63,7 @@
                 />
               </a-form-item>
             </a-col>
-            <a-col :span="2">
+            <a-col :span="3">
               <a-form-item
                 field="cover"
                 :label="$t('article.form.basic.cover')"
@@ -95,7 +95,11 @@
                         v-if="coverFile && coverFile.url"
                         class="arco-upload-list-picture custom-upload-avatar"
                       >
-                        <img :src="coverFile.url" :alt="coverFile.url" />
+                        <a-image
+                          width="160"
+                          :alt="coverFile.url"
+                          :src="coverFile.url"
+                        ></a-image>
                         <div class="arco-upload-list-picture-mask">
                           <IconEdit />
                         </div>
@@ -539,3 +543,13 @@
     );
   };
 </script>
+
+<style lang="less" scoped>
+  :deep(.arco-upload-picture-card) {
+    width: 160px;
+  }
+  :deep(.arco-upload-list-picture) {
+    width: 160px;
+  }
+</style>
+

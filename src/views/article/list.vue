@@ -2,19 +2,19 @@
   <div class="container">
     <AddArticleDrawerPage
       :visible="propsTable.visible.add"
-      @cancel="() => propsTable.visible.add = false"
+      @cancel="() => (propsTable.visible.add = false)"
       @form-callback-success="formCallbackSuccess"
     />
     <UpdateArticleDrawerPage
       :visible="propsTable.visible.update"
       :id="id"
-      @cancel="() => propsTable.visible.update = false"
+      @cancel="() => (propsTable.visible.update = false)"
       @form-callback-success="formCallbackSuccess"
     />
     <InfoArticleDrawerPage
       :visible="propsTable.visible.info"
       :id="id"
-      @cancel="() => propsTable.visible.info = false"
+      @cancel="() => (propsTable.visible.info = false)"
     />
 
     <Breadcrumb :items="['menu.article', 'menu.article.list']" />
@@ -121,7 +121,10 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="() => propsTable.visible.add = true">
+            <a-button
+              type="primary"
+              @click="() => (propsTable.visible.add = true)"
+            >
               <template #icon>
                 <icon-plus />
               </template>
@@ -139,7 +142,11 @@
             </a-button>
             <a-modal
               v-model:visible="propsTable.visible.rowSelectDelete"
-              @ok="deleteTableDataSelectBatchLine(requestArticleBatchDelete(propsTable.tableRowSelectedKeys))"
+              @ok="
+                deleteTableDataSelectBatchLine(
+                  requestArticleBatchDelete(propsTable.tableRowSelectedKeys)
+                )
+              "
             >
               <template #title
                 ><icon-exclamation-circle
@@ -223,7 +230,7 @@
         :columns="propsTable.columns"
         :data="propsTable.list"
         :size="propsTable.tableSize"
-        :bordered="{ 'wrapper': true, 'headerCell': true }"
+        :bordered="{ wrapper: true, headerCell: true }"
         :stripe="true"
         :row-selection="propsTable.tableRowSelection"
         :selected-keys="propsTable.tableRowSelectedKeys"
@@ -233,9 +240,12 @@
         @select="eventTableRowSelected"
       >
         <template #cover="{ record }">
-          <a-avatar :size="54" shape="square">
-            <img :alt="record.cover" :src="record.cover" />
-          </a-avatar>
+          <a-image
+            width="90"
+            :alt="record.cover"
+            :src="record.cover"
+            style="cursor: pointer"
+          ></a-image>
         </template>
         <template #publisher_user="{ record }">
           {{ record.author }} (ID: {{ record.user_id }})
@@ -251,10 +261,10 @@
             :key="index"
             bordered
             :color="item.color"
-            style="margin-right: 5px; margin-bottom: 5px; border: 0;"
+            style="margin-right: 5px; margin-bottom: 5px; border: 0"
           >
             <template #icon>
-              <icon-tag style="color:#ffffff;" />
+              <icon-tag style="color: #ffffff" />
             </template>
             {{ item.name }}
           </a-tag>
@@ -270,16 +280,14 @@
           >
             <template #checked>已启用</template>
             <template #unchecked>已禁用</template>
-            <template #checked-icon><icon-check/></template>
-            <template #unchecked-icon><icon-close/></template>
+            <template #checked-icon><icon-check /></template>
+            <template #unchecked-icon><icon-close /></template>
           </a-switch>
         </template>
         <template #recommend_flag="{ record, rowIndex }">
           <a-switch
             :v-model="propsTable.list[rowIndex].recommend_flag"
-            :default-checked="
-              visibleTableAttributeRecommendChecked(record)
-            "
+            :default-checked="visibleTableAttributeRecommendChecked(record)"
             checked-color="#16c516"
             unchecked-color="red"
             type="round"
@@ -287,15 +295,13 @@
           >
             <template #checked>已推荐</template>
             <template #unchecked>未推荐</template>
-            <template #checked-icon><icon-check/></template>
-            <template #unchecked-icon><icon-close/></template>
+            <template #checked-icon><icon-check /></template>
+            <template #unchecked-icon><icon-close /></template>
           </a-switch>
         </template>
-        <template #commented_flag="{ record, rowIndex}">
+        <template #commented_flag="{ record, rowIndex }">
           <a-switch
-            :default-checked="
-              visibleTableAttributeCommentedChecked(record)
-            "
+            :default-checked="visibleTableAttributeCommentedChecked(record)"
             checked-color="#16c516"
             unchecked-color="red"
             type="round"
@@ -303,16 +309,26 @@
           >
             <template #checked>已启用</template>
             <template #unchecked>已禁用</template>
-            <template #checked-icon><icon-check/></template>
-            <template #unchecked-icon><icon-close/></template>
+            <template #checked-icon><icon-check /></template>
+            <template #unchecked-icon><icon-close /></template>
           </a-switch>
         </template>
         <template #operations="{ record }">
-          <a-button v-permission="['admin']" type="primary" size="mini" @click="infoAction(record.id)">
+          <a-button
+            v-permission="['admin']"
+            type="primary"
+            size="mini"
+            @click="infoAction(record.id)"
+          >
             {{ $t('article.list.columns.operations.info') }}
           </a-button>
           &nbsp;
-          <a-button v-permission="['admin']" status="warning" size="mini" @click="updateAction(record.id)">
+          <a-button
+            v-permission="['admin']"
+            status="warning"
+            size="mini"
+            @click="updateAction(record.id)"
+          >
             {{ $t('article.list.columns.operations.edit') }}
           </a-button>
           &nbsp;
@@ -320,7 +336,9 @@
             :content="eventTableDeletePopConfirm(`[${record.title}] 这篇文章`)"
             type="warning"
             position="left"
-            @ok="deleteTableDataLine(requestArticleDelete(record.id), record.title)"
+            @ok="
+              deleteTableDataLine(requestArticleDelete(record.id), record.title)
+            "
           >
             <a-button
               v-permission="['admin']"
@@ -353,13 +371,17 @@
   import { ArticleListParams } from '@/types/article';
   import useFormProps from '@/hooks/form';
   import { useTableProps, getDensityListOptions } from '@/hooks/table';
-  import { ListColumns, getStatusOptions, getRecommendOptions } from './data/table';
-  import { searchFormModel } from './data/form'
+  import {
+    ListColumns,
+    getStatusOptions,
+    getRecommendOptions,
+  } from './data/table';
+  import { searchFormModel } from './data/form';
 
   /**
    * 国际语言
    */
-   const { t } = useI18n();
+  const { t } = useI18n();
 
   /**
    * 表格组件
@@ -369,9 +391,9 @@
     return requestArticleList(params);
   };
 
-  const { 
+  const {
     propsTable,
-    getTableDataList, 
+    getTableDataList,
     setTableColumns,
     eventTablePageChange,
     eventTableRefreshDataList,
@@ -403,7 +425,7 @@
    */
   // 表格状态改变事件
   const visibleTableAttributeStatusChecked = (record: any) => {
-    visibleTableAttributeChecked(record.status)
+    visibleTableAttributeChecked(record.status);
     return record.status === 1;
   };
   const eventTableAttributeStatusChange = (record: any, rowIndex: any) => {
@@ -411,11 +433,15 @@
     const callback = function () {
       propsTable.list[rowIndex].status = value;
     };
-    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'status', value.toString()), '文章状态', callback);
+    updateTableFieldAttribute(
+      requestArticleUpdateField(record.id, 'status', value.toString()),
+      '文章状态',
+      callback
+    );
   };
   // 表格推荐改变事件
   const visibleTableAttributeRecommendChecked = (record: any) => {
-    visibleTableAttributeChecked(record.recommend_flag)
+    visibleTableAttributeChecked(record.recommend_flag);
     return record.recommend_flag === 1;
   };
   const eventTableAttributeRecommendChange = (record: any, rowIndex: any) => {
@@ -423,11 +449,15 @@
     const callback = function () {
       propsTable.list[rowIndex].recommend_flag = value;
     };
-    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'recommend_flag', value.toString()), '文章推荐', callback);
+    updateTableFieldAttribute(
+      requestArticleUpdateField(record.id, 'recommend_flag', value.toString()),
+      '文章推荐',
+      callback
+    );
   };
   // 表格可评论改变事件
   const visibleTableAttributeCommentedChecked = (record: any) => {
-    visibleTableAttributeChecked(record.commented_flag)
+    visibleTableAttributeChecked(record.commented_flag);
     return record.commented_flag === 1;
   };
   const eventTableAttributeCommentedChange = (record: any, rowIndex: any) => {
@@ -435,17 +465,18 @@
     const callback = function () {
       propsTable.list[rowIndex].commented_flag = value;
     };
-    updateTableFieldAttribute(requestArticleUpdateField(record.id, 'commented_flag', value.toString()), '文章评论', callback);
+    updateTableFieldAttribute(
+      requestArticleUpdateField(record.id, 'commented_flag', value.toString()),
+      '文章评论',
+      callback
+    );
   };
 
   /**
    * 表单组件
    */
-  const {
-    propsForm,
-    eventFormResetFields,
-    eventFormSearch,
-  } = useFormProps(searchFormModel);
+  const { propsForm, eventFormResetFields, eventFormSearch } =
+    useFormProps(searchFormModel);
 
   // 新增/修改 表单提交成功后的回调处理
   const formCallbackSuccess = (id: string | number) => {
